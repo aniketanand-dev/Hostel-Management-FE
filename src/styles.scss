@@ -1,1 +1,48 @@
 /* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 99%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+html {
+  --mat-sys-dragged-state-layer-opacity: 0.16;
+  --mat-sys-focus-state-layer-opacity: 0.12;
+  --mat-sys-hover-state-layer-opacity: 0.00 !important;
+  --mat-sys-pressed-state-layer-opacity: 0.12;
+}
+
+/* Remove background for Material form-field input */
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: transparent !important;
+}
+
+/* Remove hover background */
+.mdc-text-field--filled:hover:not(.mdc-text-field--disabled) {
+  background-color: transparent !important;
+}
+
+/* Remove focus background */
+.mdc-text-field--filled.mdc-text-field--focused {
+  background-color: transparent !important;
+}
+
+.container {
+  background: linear-gradient(135deg, rgba(42, 42, 62, 0.8) 0%, rgba(60, 80, 120, 0.6) 100%);
+}
+
+/* styles.scss */
+.success-snackbar {
+  background-color: #4caf50;
+  color: white;
+}
+
+.error-snackbar {
+  background-color: #f44336;
+  color: white;
+}
