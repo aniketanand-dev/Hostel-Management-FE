@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-login',
-    imports: [MaterialModule],
+    imports: [ MaterialModule ],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss'
 })
@@ -36,7 +36,7 @@ export class LoginComponent {
                 next: (res) => {
                     this.authService.saveToken(res.data.token);
                     this.isLoading = false;
-                    //console.log(res);
+                    console.log(res);
                     this.router.navigate(['dashboard'])
                 }, error: (err) => {
                     console.log(err);
@@ -44,9 +44,7 @@ export class LoginComponent {
                 }
             })
 
-            console.log('Login submitted:', this.loginForm.value);
         } else {
-            // Mark all fields as touched to show validation messages
             this.loginForm.markAllAsTouched();
         }
     }

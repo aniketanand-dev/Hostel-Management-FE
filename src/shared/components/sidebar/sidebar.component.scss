@@ -1,0 +1,58 @@
+/* Container full height */
+.app-container {
+  height: 100vh;
+}
+
+/* Sidebar styling */
+.app-sidenav {
+  width: 220px;
+  background: linear-gradient(135deg, rgba(42, 42, 62, 0.8) 0%, rgba(60, 80, 120, 0.6) 100%);
+  color: #f1f5f9;
+
+  mat-toolbar.logo-bar {
+    background-color: #0f172a;
+    color: #38bdf8;
+    font-weight: bold;
+  }
+
+  a.mat-list-item {
+    color: #cbd5e1;
+
+    &.active-link {
+      background-color: #334155;
+      font-weight: 600;
+    }
+
+    &:hover {
+      background-color: #334155;
+    }
+
+    mat-icon {
+      color: #38bdf8;
+    }
+  }
+}
+
+/* Top toolbar styling */
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #f8fafc;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Main content padding */
+.app-content {
+  padding: 16px;
+}
+
+/* Responsive tweaks for mobile */
+@media (max-width: 767px) {
+  .app-sidenav {
+    width: 200px;
+  }
+}

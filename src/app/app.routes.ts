@@ -33,13 +33,13 @@ export const routes: Routes = [
             import('./../features/dashboard/dashboard.component').then(m => m.DashboardComponent),
         canActivate: [AuthGuard]
     },
-    //// Student
-    //{
-    //    path: 'students',
-    //    loadComponent: () =>
-    //        import('../../features/student/student-list.component').then(m => m.StudentListComponent),
-    //    //canActivate: [AuthGuard]
-    //},
+    // Student
+    {
+        path: 'students',
+        loadComponent: () =>
+            import('./../features/student/student.component').then(m => m.StudentComponent),
+        canActivate: [AuthGuard]
+    },
 
     //// Staff
     //{

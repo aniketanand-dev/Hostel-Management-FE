@@ -1,0 +1,41 @@
+<mat-sidenav-container class="app-container">
+    <!-- Sidebar -->
+    <mat-sidenav #sidenav
+        class="app-sidenav"
+        [mode]="isMobile ? 'over' : 'side'"
+        [opened]="!isMobile"
+        [fixedInViewport]="isMobile"
+        fixedTopGap="64">
+
+        <!-- Logo / Brand -->
+        <mat-toolbar class="logo-bar">
+            <span>HSM</span>
+        </mat-toolbar>
+
+        <!-- Navigation Items -->
+        <mat-nav-list>
+            <a mat-list-item
+                *ngFor="let item of features"
+                [routerLink]="item.path"
+                routerLinkActive="active-link"
+                (click)="isMobile ? sidenav.close() : null">
+                <mat-icon matListIcon>{{ item.icon }}</mat-icon>
+                <span matLine>{{ item.name }}</span>
+            </a>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <!-- Main Content -->
+    <mat-sidenav-content>
+        <mat-toolbar class="app-toolbar">
+            <button mat-icon-button (click)="sidenav.toggle()" *ngIf="isMobile">
+                <mat-icon>menu</mat-icon>
+            </button>
+            <span>Dashboard</span>
+        </mat-toolbar>
+
+        <div class="app-content">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

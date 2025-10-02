@@ -24,7 +24,7 @@ export class AuthService {
 
     saveToken(token: string): void {
         localStorage.setItem('token', token);
-        this.loggedIn.next(true); // update login state
+        this.loggedIn.next(true);
     }
 
     getToken(): string | null {
