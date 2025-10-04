@@ -26,44 +26,39 @@ export const routes: Routes = [
     //        import('../../features/auth/otp-verification.component').then(m => m.OTPVerificationComponent)
     //},
 
-    // Dashboard
     {
-        path: 'dashboard',
+        path: '',
         loadComponent: () =>
-            import('./../features/dashboard/dashboard.component').then(m => m.DashboardComponent),
-        canActivate: [AuthGuard]
+            import('./../shared/components/layout-main/layout-main.component').then(m => m.LayoutMainComponent),
+        canActivate: [AuthGuard],
+        children: [
+            {
+                path: 'dashboard',
+                loadComponent: () => //its use to load the compoenent directly
+                    import('./../features/dashboard/dashboard.component').then(m => m.DashboardComponent)
+            },
+            {
+                path: 'students',
+                loadChildren: () => //its use to load child route
+                    import('./../features/student/student.routes').then(m => m.studentRoutes)
+            },
+            //  {
+            //    path: 'staffs',
+            //    loadComponent: () =>
+            //      import('./features/staff/staff-list.component').then(m => m.StaffListComponent)
+            //  },
+            //  {
+            //    path: 'building',
+            //    loadComponent: () =>
+            //      import('./features/building/building-list.component').then(m => m.BuildingListComponent)
+            //  },
+            //  {
+            //    path: 'reports',
+            //    loadComponent: () =>
+            //      import('./features/reports/report-list.component').then(m => m.ReportListComponent)
+            //  }
+        ]
     },
-    // Student
-    {
-        path: 'students',
-        loadComponent: () =>
-            import('./../features/student/student.component').then(m => m.StudentComponent),
-        canActivate: [AuthGuard]
-    },
-
-    //// Staff
-    //{
-    //    path: 'staffs',
-    //    loadComponent: () =>
-    //        import('../../features/staff/staff-list.component').then(m => m.StaffListComponent),
-    //    //canActivate: [AuthGuard]
-    //},
-
-    //// Building
-    //{
-    //    path: 'building',
-    //    loadComponent: () =>
-    //        import('../../features/building/building-list.component').then(m => m.BuildingListComponent),
-    //    //canActivate: [AuthGuard]
-    //},
-
-    //// Reports
-    //{
-    //    path: 'reports',
-    //    loadComponent: () =>
-    //        import('../../features/reports/report-list.component').then(m => m.ReportListComponent),
-    //    //canActivate: [AuthGuard]
-    //},
 
     // Wildcard
     { path: '**', redirectTo: 'auth/login' }

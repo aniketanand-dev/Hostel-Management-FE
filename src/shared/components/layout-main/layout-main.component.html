@@ -1,0 +1,35 @@
+<!--<mat-sidenav-container class="layout-container">
+    <mat-sidenav
+        #sidenav
+        [mode]="isMobile ? 'over' : 'side'"
+        [opened]="!isMobile"
+        class="layout-sidenav">
+        <app-sidebar (navigate)="isMobile && sidenav.close()"></app-sidebar>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <app-navbar (menuToggle)="sidenav.toggle()"></app-navbar>
+        <div class="layout-content">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>-->
+<!-- Navbar always stays on top -->
+<app-navbar (menuToggle)="sidenav.toggle()"></app-navbar>
+
+<!-- Below the navbar, we have the sidenav container -->
+<mat-sidenav-container class="layout-container">
+    <mat-sidenav
+        #sidenav
+        [mode]="isMobile ? 'over' : 'side'"
+        [opened]="!isMobile"
+        class="layout-sidenav">
+        <app-sidebar (navigate)="isMobile && sidenav.close()"></app-sidebar>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <div class="layout-content">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

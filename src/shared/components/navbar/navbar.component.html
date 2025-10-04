@@ -1,1 +1,12 @@
-<p>navbar works!</p>
+<mat-toolbar color="primary" class="navbar">
+    <button mat-icon-button (click)="menuToggle.emit()">
+        <mat-icon>menu</mat-icon>
+    </button>
+
+    <span>HSM Portal</span>
+    <span class="spacer"></span>
+
+    <button mat-icon-button>
+        <mat-icon>logout</mat-icon>
+    </button>
+</mat-toolbar>

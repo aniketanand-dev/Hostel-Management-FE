@@ -1,10 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { ApiService } from '../../app/core/services/api.service';
-import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
-
 @Component({
     selector: 'app-dashboard',
-    imports: [SidebarComponent],
+    imports: [],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.scss'
 })

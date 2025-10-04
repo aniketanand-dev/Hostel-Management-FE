@@ -1,21 +1,17 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterOutlet } from '@angular/router';
-import { MaterialModule } from '../../../shared/materials/materials.module';
 
 @Component({
     selector: 'app-sidebar',
-    imports: [CommonModule, RouterLink, MatSidenavModule, MatListModule, MatIconModule, MatToolbarModule, RouterOutlet, MaterialModule],
+    imports: [CommonModule, RouterLink, MatListModule, MatIconModule],
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
-    @Input() features: any[] = [];
+    @Output() navigate = new EventEmitter<void>();
     isMobile: boolean = false;
 
     constructor() {
