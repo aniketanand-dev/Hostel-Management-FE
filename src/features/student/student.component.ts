@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-
+import { MatIconModule } from '@angular/material/icon';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
+import { MaterialModule } from "../../shared/materials/materials.module";
 export interface PeriodicElement {
     name: string;
     position: number;
@@ -22,7 +25,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 @Component({
     selector: 'app-student',
-    imports: [MatTableModule],
+    imports: [MatTableModule, MatIconModule, MatMenuModule, MatButtonModule, MaterialModule],
     templateUrl: './student.component.html',
     styleUrl: './student.component.scss'
 })

@@ -13,6 +13,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatRippleModule } from '@angular/material/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgOtpInputModule } from 'ng-otp-input';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
     declarations: [],
@@ -32,7 +34,9 @@ import { NgOtpInputModule } from 'ng-otp-input';
         MatRippleModule,
         RouterLink,
         RouterLinkActive,
-        NgOtpInputModule
+        NgOtpInputModule,
+        MatDividerModule,
+        MatSelectModule
     ],
     exports: [
         CommonModule,

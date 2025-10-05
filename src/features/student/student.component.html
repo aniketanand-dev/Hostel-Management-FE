@@ -1,4 +1,18 @@
 <div class="container">
+    <section class="section">
+        <button mat-icon-button [matMenuTriggerFor]="menu"
+            aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item routerLink="/students/student-form">
+                <mat-icon>person_add</mat-icon>
+                <span>Add Student</span>
+            </button>
+        </mat-menu>
+    </section>
+</div>
+<div class="container">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
         <!--- Note that these columns can be defined in any order.

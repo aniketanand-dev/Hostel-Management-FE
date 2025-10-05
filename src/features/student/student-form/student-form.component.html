@@ -1,0 +1,60 @@
+<div class="student-form-container">
+    <mat-card>
+        <mat-card-title>Add Student</mat-card-title>
+
+        <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+            <div class="form-fields">
+                <!-- Name -->
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Full Name</mat-label>
+                    <input matInput placeholder="Enter name"
+                        formControlName="name" required>
+                    <mat-error
+                        *ngIf="studentForm.get('name')?.hasError('required')">
+                        Name is required
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Email -->
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Email</mat-label>
+                    <input matInput placeholder="Enter email"
+                        formControlName="email" required>
+                    <mat-error
+                        *ngIf="studentForm.get('email')?.hasError('email')">
+                        Please enter a valid email
+                    </mat-error>
+                    <mat-error
+                        *ngIf="studentForm.get('email')?.hasError('required')">
+                        Email is required
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Gender -->
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Gender</mat-label>
+                    <mat-select formControlName="gender">
+                        <mat-option value="MALE">Male</mat-option>
+                        <mat-option value="FEMALE">Female</mat-option>
+                        <mat-option value="OTHER">Other</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- Active Status -->
+                <mat-slide-toggle formControlName="isActive">
+                    Active Student
+                </mat-slide-toggle>
+            </div>
+
+            <div class="form-actions">
+                <button mat-raised-button matRipple color="primary" type="submit"
+                    [disabled]="studentForm.invalid">
+                    Save
+                </button>
+                <button mat-stroked-button color="warn" type="reset">
+                    Reset
+                </button>
+            </div>
+        </form>
+    </mat-card>
+</div>
