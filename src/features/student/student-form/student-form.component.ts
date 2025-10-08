@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ReactiveFormsModule } from '@angular/forms';
+import { UserService } from '../../../app/core/services/user.service';
 
 @Component({
     selector: 'app-student-form',
@@ -31,7 +32,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class StudentFormComponent {
     studentForm!: FormGroup;
 
-    constructor(private fb: FormBuilder) {
+    constructor(
+        private fb: FormBuilder,
+        private userService: UserService
+
+    ) {
         this.createForm();
     }
 
@@ -47,6 +52,17 @@ export class StudentFormComponent {
     onSubmit() {
         if (this.studentForm.valid) {
             console.log('Student Data:', this.studentForm.value);
+            const payload = this.studentForm.value
+            payload.roleName = 'STUDENT'
+            this.userService.createUser(payload).subscribe({
+                next: (res) => {
+                    console.log('✅ User created successfully:', res);
+                },
+                error: (err) => {
+                    console.error('❌ Error creating user:', err);
+                }
+            });
         }
     }
+
 }
