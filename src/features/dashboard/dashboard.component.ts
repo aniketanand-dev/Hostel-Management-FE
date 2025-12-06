@@ -12,11 +12,11 @@ export class DashboardComponent {
     features: any[] = [];
 
     constructor() {
-        this.api.getData('home').subscribe({
-            next: (res: any) => {
-                this.features = res.data.features;
-            },
-            error: (err) => console.error(err)
-        });
+        //this.api.getData('home').subscribe({
+        //    next: (res: any) => {
+        //        this.features = res.data.features;
+        //    },
+        //    error: (err) => console.error(err)
+        //});
     }
 }

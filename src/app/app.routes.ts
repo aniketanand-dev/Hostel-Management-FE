@@ -25,6 +25,12 @@ export const routes: Routes = [
     //    loadComponent: () =>
     //        import('../../features/auth/otp-verification.component').then(m => m.OTPVerificationComponent)
     //},
+    {
+        path: 'home',
+        canActivate: [AuthGuard],
+        loadComponent: () =>
+            import('./../features/home/home.component').then(m => m.HomeComponent)
+    },
 
     {
         path: '',

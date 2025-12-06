@@ -37,7 +37,7 @@ export class LoginComponent {
                     this.authService.saveToken(res.data.token);
                     this.isLoading = false;
                     console.log(res);
-                    this.router.navigate(['dashboard'])
+                    this.router.navigate(['home'])
                 }, error: (err) => {
                     console.log(err);
 

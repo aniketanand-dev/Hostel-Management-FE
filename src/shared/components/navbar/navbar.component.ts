@@ -3,6 +3,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../app/core/services/auth.service';
 @Component({
     selector: 'app-navbar',
     imports: [CommonModule, MatToolbarModule, MatButtonModule, MatIconModule],
@@ -11,4 +12,14 @@ import { CommonModule } from '@angular/common';
 })
 export class NavbarComponent {
     @Output() menuToggle = new EventEmitter<void>();
+
+    constructor(
+        private authService: AuthService
+    ) {
+
+    }
+
+    logout() {
+        this.authService.logout()
+    }
 }
