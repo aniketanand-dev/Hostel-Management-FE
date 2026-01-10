@@ -15,6 +15,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgOtpInputModule } from 'ng-otp-input';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
     declarations: [],
@@ -36,7 +37,8 @@ import { MatSelectModule } from '@angular/material/select';
         RouterLinkActive,
         NgOtpInputModule,
         MatDividerModule,
-        MatSelectModule
+        MatSelectModule,
+        MatDialogModule
     ],
     exports: [
         CommonModule,

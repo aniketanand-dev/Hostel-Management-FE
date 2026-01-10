@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../app/core/services/api.service';
 import { NgForOf } from "../../../node_modules/@angular/common/common_module.d-NEF7UaHr";
+import { MatDialog } from '@angular/material/dialog';
+import { AuthService } from '../../app/core/services/auth.service';
+import { HostelPopupComponent } from './hostel-popup/hostel-popup.component';
+import { Router } from '@angular/router';
 
 interface TokenData {
     hostelName: string;
@@ -23,7 +27,10 @@ export class HomeComponent {
     data!: HomeApiData;
     tokens: TokenData[] = [];
     constructor(
-        private _api: ApiService
+        private _api: ApiService,
+        private dialog: MatDialog,
+        private authService: AuthService,
+        private router: Router
     ) { }
 
     ngOnInit(): void {
@@ -34,6 +41,19 @@ export class HomeComponent {
                 this.tokens = res?.tokens;
             }
         })
+    }
+
+    openHostelPopup(item: any) {
+        this.dialog.open(HostelPopupComponent, {
+            data: { hostelId: item.id }
+        }).afterClosed().subscribe(result => {
+            if (result) {
+                //console.log('Selected:', result);
+                this.authService.saveToken(result);
+                this.router.navigate(['dashboard'])
+            }
+        });
+
     }
 
 }

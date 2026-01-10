@@ -1,9 +1,13 @@
 <div class="hostel-container">
     <ng-container *ngFor="let item of tokens">
-        <div class="hostel-card">
+        <div class="hostel-card" (click)="openHostelPopup(item)">
             <h3>{{ item.hostelName }}</h3>
             <p>{{ item.roleName }}</p>
         </div>
 
     </ng-container>
+</div>
+
+<div>
+
 </div>
