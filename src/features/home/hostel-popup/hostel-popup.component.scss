@@ -1,0 +1,54 @@
+/* Dialog Title */
+.dialog-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Dialog Content */
+.dialog-content {
+  min-width: 320px;
+  padding-top: 8px;
+}
+
+/* Section title */
+.section-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+/* Radio group layout */
+.role-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Individual radio button */
+.role-radio {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Hover effect */
+.role-radio:hover {
+  background-color: #f5f5f5;
+  border-color: #bdbdbd;
+}
+
+/* Selected state */
+.role-radio.mat-radio-checked {
+  background-color: #e3f2fd;
+  border-color: #1976d2;
+}
+
+/* Dialog actions */
+.dialog-actions {
+  margin-top: 16px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+}

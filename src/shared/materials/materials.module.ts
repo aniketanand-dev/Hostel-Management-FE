@@ -16,6 +16,9 @@ import { NgOtpInputModule } from 'ng-otp-input';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
+import { MatMenuModule } from '@angular/material/menu';
+
 
 @NgModule({
     declarations: [],
@@ -38,7 +41,9 @@ import { MatDialogModule } from '@angular/material/dialog';
         NgOtpInputModule,
         MatDividerModule,
         MatSelectModule,
-        MatDialogModule
+        MatDialogModule,
+        MatTableModule,
+        MatMenuModule
     ],
     exports: [
         CommonModule,
@@ -55,7 +60,13 @@ import { MatDialogModule } from '@angular/material/dialog';
         MatRadioModule,
         MatRippleModule,
         RouterLink,
-        RouterLinkActive
+        RouterLinkActive,
+        NgOtpInputModule,
+        MatDividerModule,
+        MatSelectModule,
+        MatDialogModule,
+        MatTableModule,
+        MatMenuModule
     ]
 })
 export class MaterialModule { }

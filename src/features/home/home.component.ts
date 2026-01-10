@@ -44,11 +44,13 @@ export class HomeComponent {
     }
 
     openHostelPopup(item: any) {
+        console.log(item);
+        this.authService.saveToken(item.token);
         this.dialog.open(HostelPopupComponent, {
-            data: { hostelId: item.id }
+            data: { hostelId: item }
         }).afterClosed().subscribe(result => {
             if (result) {
-                //console.log('Selected:', result);
+                console.log('Selected:', result);
                 this.authService.saveToken(result);
                 this.router.navigate(['dashboard'])
             }
