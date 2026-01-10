@@ -1,4 +1,3 @@
-// core/services/toast.service.ts
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -7,17 +6,20 @@ export class ToastService {
 
     constructor(private snackBar: MatSnackBar) { }
 
-    success(message: string) {
-        this.snackBar.open(message, 'Close', {
-            duration: 3000,
-            panelClass: ['success-snackbar']
+    show(message: string, action: string = 'Close', duration: number = 3000, panelClass: string = '') {
+        this.snackBar.open(message, action, {
+            duration,
+            horizontalPosition: 'right',
+            verticalPosition: 'top',
+            panelClass
         });
     }
 
+    success(message: string) {
+        this.show(message, '✔️', 3000, 'success');
+    }
+
     error(message: string) {
-        this.snackBar.open(message, 'Close', {
-            duration: 3000,
-            panelClass: ['error-snackbar']
-        });
+        this.show(message, '❌', 5000, 'error');
     }
 }
