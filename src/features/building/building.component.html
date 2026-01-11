@@ -5,10 +5,10 @@
             <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-            <button mat-menu-item routerLink="/students/student-form"
-                [queryParams]="{ type: 'student' }">
-                <mat-icon>person_add</mat-icon>
-                <span>Add Student</span>
+            <button mat-menu-item routerLink="/buildings/building-form"
+                [queryParams]="{ type: 'building' }">
+                <mat-icon>building</mat-icon>
+                <span>Add Building</span>
             </button>
         </mat-menu>
     </section>
@@ -22,15 +22,9 @@
     </ng-container>
 
     <!-- Name -->
-    <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-    </ng-container>
-
-    <!-- Email -->
-    <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>Email</th>
-        <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+    <ng-container matColumnDef="buildingName">
+        <th mat-header-cell *matHeaderCellDef>Building Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.buildingName }}</td>
     </ng-container>
 
     <!-- Action -->

@@ -1,0 +1,29 @@
+<mat-card>
+    <mat-card-title>Create Building</mat-card-title>
+
+    <form [formGroup]="buildingForm" (ngSubmit)="submit()">
+
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Building Name</mat-label>
+            <input matInput formControlName="buildingName" />
+
+            <mat-error
+                *ngIf="buildingForm.get('buildingName')?.hasError('required')">
+                Building name is required
+            </mat-error>
+
+            <mat-error
+                *ngIf="buildingForm.get('buildingName')?.hasError('minlength')">
+                Minimum 2 characters required
+            </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="buildingForm.invalid || isSubmitting">
+            Create
+        </button>
+
+    </form>
+</mat-card>

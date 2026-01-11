@@ -48,16 +48,16 @@ export const routes: Routes = [
                 loadChildren: () => //its use to load child route
                     import('./../features/student/student.routes').then(m => m.studentRoutes)
             },
-            //  {
-            //    path: 'staffs',
-            //    loadComponent: () =>
-            //      import('./features/staff/staff-list.component').then(m => m.StaffListComponent)
-            //  },
-            //  {
-            //    path: 'building',
-            //    loadComponent: () =>
-            //      import('./features/building/building-list.component').then(m => m.BuildingListComponent)
-            //  },
+            {
+                path: 'staffs',
+                loadChildren: () =>
+                    import('./../features/staff/staff.routes').then(m => m.staffRoutes)
+            },
+            {
+                path: 'buildings',
+                loadChildren: () =>
+                    import('./../features/building/building.routes').then(m => m.buildingRoutes)
+            },
             //  {
             //    path: 'reports',
             //    loadComponent: () =>

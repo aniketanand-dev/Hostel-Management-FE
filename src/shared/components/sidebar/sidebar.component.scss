@@ -1,2 +1,23 @@
-mat-icon { margin-right: 8px; }
-    a.active { background: rgba(0, 0, 0, 0.1); }
+/* Active background */
+a.mat-mdc-list-item.menu-active {
+  background-color: rgba(25, 118, 210, 0.15) !important;
+  border-radius: 8px;
+}
+
+/* Active text */
+a.mat-mdc-list-item.menu-active .mat-mdc-list-item-title {
+  color: #0076ec !important;
+  font-weight: 600;
+}
+
+/* Active icon */
+a.mat-mdc-list-item.menu-active mat-icon {
+  color: #626568 !important;
+}
+
+/* Prevent hover/focus from overriding active */
+a.mat-mdc-list-item.menu-active:hover,
+a.mat-mdc-list-item.menu-active.cdk-focused,
+a.mat-mdc-list-item.menu-active.cdk-program-focused {
+  background-color: rgba(25, 118, 210, 0.15) !important;
+}

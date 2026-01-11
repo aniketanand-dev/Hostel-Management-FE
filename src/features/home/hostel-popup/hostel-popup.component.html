@@ -1,29 +1,17 @@
-<h2 mat-dialog-title class="dialog-title">
-    {{ data.hostelName }}
-</h2>
+<h2 mat-dialog-title>{{ data.hostelName }}</h2>
 
-<mat-dialog-content class="dialog-content">
-
-    <p class="section-title">Select Role</p>
-
-    <mat-radio-group
-        [(ngModel)]="selectedRoleId"
-        class="role-group">
-
+<mat-dialog-content>
+    <mat-radio-group [(ngModel)]="selectedRoleId">
         <mat-radio-button
             *ngFor="let role of hostelData"
-            [value]="role.token"
-            class="role-radio">
+            [value]="role.token">
             {{ role.roleName }}
         </mat-radio-button>
-
     </mat-radio-group>
-
 </mat-dialog-content>
 
-<mat-dialog-actions align="end" class="dialog-actions">
+<mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Cancel</button>
-
     <button
         mat-raised-button
         color="primary"

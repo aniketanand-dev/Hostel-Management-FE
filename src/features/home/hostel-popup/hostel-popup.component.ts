@@ -18,7 +18,7 @@ export class HostelPopupComponent {
         @Inject(MAT_DIALOG_DATA) public data: any,
         public HostelService: HostelService
     ) {
-        this.HostelService.getUserRolesByHostel(1).subscribe({
+        this.HostelService.getUserRolesByHostel(0).subscribe({
             next: (res) => {
                 this.hostelData = res.roles;
                 console.log(this.hostelData);

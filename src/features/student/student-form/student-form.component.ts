@@ -12,6 +12,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../../app/core/services/user.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-student-form',
@@ -31,13 +32,15 @@ import { UserService } from '../../../app/core/services/user.service';
 })
 export class StudentFormComponent {
     studentForm!: FormGroup;
+    roleName: 'STAFF' | 'STUDENT' = 'STUDENT';
 
     constructor(
         private fb: FormBuilder,
-        private userService: UserService
-
+        private userService: UserService,
+        private route: ActivatedRoute
     ) {
         this.createForm();
+        this.readQueryParams();
     }
 
     createForm() {
@@ -49,11 +52,25 @@ export class StudentFormComponent {
         });
     }
 
+    readQueryParams() {
+        this.route.queryParams.subscribe((params: any) => {
+            if (params['type'] === 'staff') {
+                this.roleName = 'STAFF';
+            } else {
+                this.roleName = 'STUDENT';
+            }
+        });
+    }
+
     onSubmit() {
         if (this.studentForm.valid) {
-            console.log('Student Data:', this.studentForm.value);
-            const payload = this.studentForm.value
-            payload.roleName = 'STUDENT'
+            const payload = {
+                ...this.studentForm.value,
+                roleName: this.roleName
+            };
+
+            console.log('Payload:', payload);
+
             this.userService.createUser(payload).subscribe({
                 next: (res) => {
                     console.log('✅ User created successfully:', res);
@@ -64,5 +81,5 @@ export class StudentFormComponent {
             });
         }
     }
-
 }
+

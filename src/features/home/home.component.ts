@@ -44,18 +44,36 @@ export class HomeComponent {
     }
 
     openHostelPopup(item: any) {
-        console.log(item);
+        // save base hostel token if required
         this.authService.saveToken(item.token);
-        this.dialog.open(HostelPopupComponent, {
-            data: { hostelId: item }
-        }).afterClosed().subscribe(result => {
-            if (result) {
-                console.log('Selected:', result);
-                this.authService.saveToken(result);
-                this.router.navigate(['dashboard'])
+
+        this._api.getData(`user-role?hostelId=${item.hostelId}`).subscribe({
+            next: (res: any) => {
+                const roles = res.roles;
+
+                // ✅ ONLY ONE ROLE → DIRECT LOGIN
+                if (roles.length === 1) {
+                    const roleToken = roles[0].token;
+                    this.authService.saveToken(roleToken);
+                    this.router.navigate(['dashboard']);
+                    return;
+                }
+
+                this.dialog.open(HostelPopupComponent, {
+                    data: {
+                        hostelName: item.hostelName,
+                        hostelId: item.hostelId,
+                        roles
+                    }
+                }).afterClosed().subscribe(result => {
+                    if (result) {
+                        this.authService.saveToken(result);
+                        this.router.navigate(['dashboard']);
+                    }
+                });
             }
         });
-
     }
+
 
 }

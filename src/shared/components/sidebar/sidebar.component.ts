@@ -4,6 +4,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { ApiService } from '../../../app/core/services/api.service';
+import { RouterModule } from '@angular/router';
 
 export interface Feature {
     name: string;
@@ -21,7 +22,7 @@ export interface HomeResponse {
 
 @Component({
     selector: 'app-sidebar',
-    imports: [CommonModule, RouterLink, MatListModule, MatIconModule],
+    imports: [CommonModule, RouterLink, MatListModule, MatIconModule, RouterModule],
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.scss'
 })

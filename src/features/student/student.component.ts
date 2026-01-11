@@ -23,11 +23,7 @@ export class StudentComponent implements OnInit {
 
     ngOnInit(): void {
         this.userService.getStudent().subscribe(res => {
-            this.dataSource = res.data.map((item: any) => ({
-                id: item.User.id,
-                name: item.User.name,
-                email: item.User.email
-            }));
+            this.dataSource = res.data
         });
     }
 
