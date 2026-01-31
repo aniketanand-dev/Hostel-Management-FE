@@ -15,7 +15,7 @@ export class AuthGuard implements CanActivate {
         // If server-side, allow the route so the correct page starts loading.
         // The real check will happen on the client where localStorage is available.
         if (!isPlatformBrowser(this.platformId)) {
-            return true;
+            return false;
         }
 
         if (this.authService.isLoggedIn()) {

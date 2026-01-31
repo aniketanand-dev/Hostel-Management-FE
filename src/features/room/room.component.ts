@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, PLATFORM_ID, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../app/core/services/api.service';
 import { MaterialModule } from '../../shared/materials/materials.module';
@@ -19,6 +19,7 @@ export class RoomComponent implements OnInit {
     private api = inject(ApiService);
     private dialog = inject(MatDialog);
     private snackBar = inject(MatSnackBar);
+    private platformId = inject(PLATFORM_ID);
 
     floorId: number | null = null;
     buildingId: number | null = null;
@@ -74,21 +75,24 @@ export class RoomComponent implements OnInit {
 
     // Notice & Departure
     showNoticeModal = false;
-    noticeData = {
+    noticeData: any = {
         allocationId: null,
-        plannedDate: new Date().toISOString().split('T')[0]
+        plannedDate: new Date().toISOString().split('T')[0],
+        dailyCharge: null
     };
     checkoutSummary: any = null;
 
     ngOnInit(): void {
-        this.route.queryParams.subscribe(params => {
-            this.floorId = +params['floorId'];
-            this.buildingId = +params['buildingId'];
-            if (this.floorId) {
-                this.loadRooms();
-            }
-        });
-        this.loadStudents();
+        if (isPlatformBrowser(this.platformId)) {
+            this.route.queryParams.subscribe(params => {
+                this.floorId = +params['floorId'];
+                this.buildingId = +params['buildingId'];
+                if (this.floorId) {
+                    this.loadRooms();
+                }
+            });
+            this.loadStudents();
+        }
     }
 
     // Bed editing
@@ -452,7 +456,11 @@ export class RoomComponent implements OnInit {
 
     closeNotice(): void {
         this.showNoticeModal = false;
-        this.noticeData = { allocationId: null, plannedDate: new Date().toISOString().split('T')[0] };
+        this.noticeData = {
+            allocationId: null,
+            plannedDate: new Date().toISOString().split('T')[0],
+            dailyCharge: null
+        };
     }
 
     saveNotice(): void {

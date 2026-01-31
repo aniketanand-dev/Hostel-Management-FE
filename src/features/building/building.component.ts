@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MaterialModule } from '../../shared/materials/materials.module';
 import { OnBoardingService } from '../../app/core/services/on-boarding.service';
 import { Router, RouterModule } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
-import { CommonModule } from '@angular/common';
-
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -20,13 +19,16 @@ export class BuildingComponent implements OnInit {
     constructor(
         private _onBoardingService: OnBoardingService,
         private _router: Router,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        @Inject(PLATFORM_ID) private platformId: Object
     ) { }
 
     ngOnInit(): void {
-        this._onBoardingService.getBuilding().subscribe(res => {
-            this.dataSource.data = res.data;
-        });
+        if (isPlatformBrowser(this.platformId)) {
+            this._onBoardingService.getBuilding().subscribe(res => {
+                this.dataSource.data = res.data;
+            });
+        }
     }
 
     applyFilter(event: Event) {

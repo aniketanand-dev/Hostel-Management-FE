@@ -30,7 +30,7 @@ export class RecordPaymentDialogComponent implements OnInit {
         const today = new Date();
         this.paymentForm = this.fb.group({
             allocationId: [data.allocationId, Validators.required],
-            amountPaid: [data.balance, [Validators.required, Validators.min(1)]],
+            amountPaid: [data.balance, [Validators.required, Validators.min(1), Validators.max(data.balance)]],
             forMonth: [today.getMonth() + 1, Validators.required],
             forYear: [today.getFullYear(), Validators.required],
             notes: ['']

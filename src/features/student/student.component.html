@@ -78,6 +78,13 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
             </table>
         </div>
+        <div *ngIf="dataSource.data.length === 0" class="p-8 text-center text-gray-500">
+            <div class="mb-2">
+                <mat-icon style="font-size: 48px; height: 48px; width: 48px; color: #cbd5e1;">school</mat-icon>
+            </div>
+            <p class="text-lg font-medium">No students found</p>
+            <p class="text-sm opacity-75">Add a new student to get started or adjust your search filters.</p>
+        </div>
     </mat-card>
 </div>
 
@@ -144,7 +151,13 @@
 
             <!-- Payment History -->
             <div class="history-section" *ngIf="selectedUser?.RoomAllocations?.length > 0">
-                <h3>Recent Payment Transactions</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="margin: 0;">Recent Payment Transactions</h3>
+                    <button mat-stroked-button color="primary" (click)="viewPaymentHistory(selectedUser.RoomAllocations)">
+                        <mat-icon>history</mat-icon>
+                        View Full History
+                    </button>
+                </div>
                 <div class="transaction-list">
                     <ng-container *ngFor="let alloc of selectedUser.RoomAllocations">
                         <div class="transaction-item" *ngFor="let pay of alloc.payments">

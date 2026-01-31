@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { UserService } from '../../app/core/services/user.service';
 import { MaterialModule } from '../../shared/materials/materials.module';
 import { MatTableDataSource } from '@angular/material/table';
@@ -8,6 +8,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ExportService } from '../../app/core/services/export.service';
 
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { PaymentHistoryDialogComponent } from '../payment/payment-history-dialog/payment-history-dialog.component';
 
 @Component({
     selector: 'app-student',
@@ -29,11 +31,15 @@ export class StudentComponent implements OnInit {
     constructor(
         private userService: UserService,
         private exportService: ExportService,
-        private router: Router
+        private router: Router,
+        private dialog: MatDialog,
+        @Inject(PLATFORM_ID) private platformId: Object
     ) { }
 
     ngOnInit(): void {
-        this.loadStudents();
+        if (isPlatformBrowser(this.platformId)) {
+            this.loadStudents();
+        }
     }
 
     loadStudents() {
@@ -98,5 +104,23 @@ export class StudentComponent implements OnInit {
         }));
 
         this.exportService.downloadCSV(data, 'students_list');
+    }
+
+    viewPaymentHistory(allocations: any) {
+        // Handle if allocations is passed as single object or array
+        let allocationList = Array.isArray(allocations) ? allocations : [allocations];
+
+        // Find active allocation first, otherwise take the most recent one (assuming sort)
+        const activeAlloc = allocationList.find((a: any) => a.status === 'ACTIVE') || allocationList[0];
+
+        if (!activeAlloc) return;
+
+        this.dialog.open(PaymentHistoryDialogComponent, {
+            width: '800px',
+            data: {
+                allocationId: activeAlloc.id,
+                userName: this.selectedUser?.name
+            }
+        });
     }
 }

@@ -5,16 +5,19 @@
             <p>Track and manage student fee collections efficiently.</p>
         </div>
         <div class="header-actions">
-            <button mat-stroked-button class="export-btn" (click)="exportData()" [disabled]="upcomingPayments.length === 0">
+            <button mat-stroked-button class="export-btn" (click)="exportData()" [disabled]="currentList.length === 0">
                 <mat-icon>download</mat-icon>
                 Export
             </button>
-            <button mat-flat-button color="primary" (click)="loadUpcomingPayments()">
+            <button mat-flat-button color="primary" (click)="refreshCurrentView()">
                 <mat-icon>refresh</mat-icon>
                 Refresh List
             </button>
         </div>
     </div>
+
+    <mat-tab-group [(selectedIndex)]="selectedTab" (selectedIndexChange)="onTabChange($event)" class="payment-tabs">
+        <mat-tab label="Pending Payments">
 
     <div class="content-card glass-panel">
         <div class="table-wrapper">
@@ -112,4 +115,88 @@
             <mat-spinner diameter="40"></mat-spinner>
         </div>
     </div>
+        </mat-tab>
+
+        <mat-tab label="All Students">
+            <div class="content-card glass-panel">
+                <div class="table-wrapper">
+                    <table mat-table [dataSource]="allStudents" class="full-width-table">
+                        
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef> Student Name </th>
+                            <td mat-cell *matCellDef="let element">
+                                <div class="student-profile">
+                                    <div class="avatar-placeholder">{{element.userName?.charAt(0) || 'S'}}</div>
+                                    <div class="info">
+                                        <span class="name">{{element.userName}}</span>
+                                        <span class="email">{{element.userEmail}}</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </ng-container>
+                        
+                        <!-- Room Column -->
+                        <ng-container matColumnDef="room">
+                            <th mat-header-cell *matHeaderCellDef> Room </th>
+                            <td mat-cell *matCellDef="let element">
+                                Room #{{element.roomNumber || 'N/A'}}
+                            </td>
+                        </ng-container>
+
+                        <!-- Monthly Rent Column -->
+                        <ng-container matColumnDef="rent">
+                            <th mat-header-cell *matHeaderCellDef> Monthly Rent </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span class="amount-badge">₹ {{element.monthlyRent | number:'1.2-2'}}</span>
+                            </td>
+                        </ng-container>
+
+                        <!-- Total Paid Column -->
+                        <ng-container matColumnDef="totalPaid">
+                            <th mat-header-cell *matHeaderCellDef> Total Paid </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span class="paid-badge">₹ {{element.totalPaid || 0 | number:'1.2-2'}}</span>
+                            </td>
+                        </ng-container>
+
+                        <!-- Action Column -->
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef> </th>
+                            <td mat-cell *matCellDef="let element">
+                                <div style="display: flex; gap: 8px;">
+                                    <button mat-icon-button (click)="viewHistory(element)" matTooltip="View Payment History">
+                                        <mat-icon>history</mat-icon>
+                                    </button>
+                                    <button mat-stroked-button color="primary" class="pay-btn" (click)="recordPayment(element)">
+                                        Record Payment
+                                    </button>
+                                </div>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="allStudentsColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: allStudentsColumns;" class="element-row"></tr>
+
+                        <!-- Empty State -->
+                        <tr class="mat-row" *noDataRow>
+                            <td class="mat-cell empty-cell" colspan="5">
+                                <div class="empty-layout">
+                                    <div class="icon-circle">
+                                        <mat-icon>people</mat-icon>
+                                    </div>
+                                    <h3>No Students Found</h3>
+                                    <p>No active students with room allocations.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div *ngIf="isLoading" class="loading-overlay">
+                    <mat-spinner diameter="40"></mat-spinner>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
 </div>

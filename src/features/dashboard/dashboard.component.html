@@ -118,5 +118,32 @@
                 </mat-list>
             </mat-card-content>
         </mat-card>
+        <mat-card class="activity-card glass-panel count-down-card">
+            <mat-card-header>
+                <mat-card-title>In Notice Period</mat-card-title>
+                <mat-card-subtitle>Students scheduled to checkout</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="empty-state" *ngIf="studentsInNotice.length === 0">
+                    <mat-icon>sentiment_satisfied</mat-icon>
+                    <p>No students in notice period.</p>
+                </div>
+                <mat-list>
+                    <mat-list-item *ngFor="let student of studentsInNotice">
+                        <mat-icon matListItemIcon color="warn">timer</mat-icon>
+                        <div matListItemTitle style="display: flex; justify-content: space-between;">
+                            <span style="font-weight: 600;">{{student.studentName}} (Room {{student.roomNumber}})</span>
+                            <span class="countdown-timer">{{student.countdown}}</span>
+                        </div>
+                        <div matListItemLine>
+                            Checkout Date: {{student.plannedCheckoutDate | date:'medium'}}
+                        </div>
+                        <div *ngIf="student.noticeDailyCharge" matListItemLine style="color: #6366f1; font-weight: 500;">
+                            Daily Charge Applied: ₹{{student.noticeDailyCharge}}
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+            </mat-card-content>
+        </mat-card>
     </div>
 </div>

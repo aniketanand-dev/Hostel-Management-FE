@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ApiService } from '../../app/core/services/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../app/core/services/auth.service';
@@ -33,11 +33,14 @@ export class HomeComponent implements OnInit {
         private _api: ApiService,
         private dialog: MatDialog,
         private authService: AuthService,
-        private router: Router
+        private router: Router,
+        @Inject(PLATFORM_ID) private platformId: Object
     ) { }
 
     ngOnInit(): void {
-        this.loadHostels();
+        if (isPlatformBrowser(this.platformId)) {
+            this.loadHostels();
+        }
     }
 
     loadHostels() {

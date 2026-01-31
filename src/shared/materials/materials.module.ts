@@ -22,6 +22,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -51,7 +53,8 @@ import { MatNativeDateModule } from '@angular/material/core';
         MatListModule,
         MatChipsModule,
         MatDatepickerModule,
-        MatNativeDateModule
+        MatNativeDateModule,
+        MatTabsModule
     ],
     exports: [
         CommonModule,
@@ -78,7 +81,8 @@ import { MatNativeDateModule } from '@angular/material/core';
         MatListModule,
         MatChipsModule,
         MatDatepickerModule,
-        MatNativeDateModule
+        MatNativeDateModule,
+        MatTabsModule
     ]
 })
 export class MaterialModule { }

@@ -1,5 +1,5 @@
-import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, HostListener, OnInit, Output, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
@@ -35,8 +35,13 @@ export class SidebarComponent implements OnInit {
     features: Feature[] = [];
     hostelId!: number;
 
-    constructor(private api: ApiService) {
-        this.checkScreen();
+    constructor(
+        private api: ApiService,
+        @Inject(PLATFORM_ID) private platformId: Object
+    ) {
+        if (isPlatformBrowser(this.platformId)) {
+            this.checkScreen();
+        }
     }
 
     ngOnInit(): void {
@@ -52,10 +57,14 @@ export class SidebarComponent implements OnInit {
 
     @HostListener('window:resize')
     onResize() {
-        this.checkScreen();
+        if (isPlatformBrowser(this.platformId)) {
+            this.checkScreen();
+        }
     }
 
     checkScreen() {
-        this.isMobile = window.innerWidth < 768;
+        if (isPlatformBrowser(this.platformId)) {
+            this.isMobile = window.innerWidth < 768;
+        }
     }
 }

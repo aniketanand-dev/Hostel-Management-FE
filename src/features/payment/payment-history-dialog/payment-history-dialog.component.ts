@@ -14,7 +14,7 @@ export class PaymentHistoryDialogComponent implements OnInit {
     payments: any[] = [];
     isLoading = true;
 
-    displayedColumns: string[] = ['date', 'month', 'amount', 'status', 'receipt'];
+    displayedColumns: string[] = ['date', 'month', 'amount', 'status', 'receipt', 'actions'];
 
     constructor(
         private api: ApiService,
@@ -27,16 +27,46 @@ export class PaymentHistoryDialogComponent implements OnInit {
     }
 
     loadHistory() {
+        console.log('Loading history for allocationId:', this.data.allocationId);
         this.api.getData(`payment/history?allocationId=${this.data.allocationId}`).subscribe({
             next: (res: any) => {
+                console.log('Payment history loaded:', res);
                 this.payments = res.data;
                 this.isLoading = false;
             },
             error: (err) => {
-                console.error(err);
+                console.error('Error loading history:', err);
                 this.isLoading = false;
             }
         });
+    }
+
+    cancelPayment(id: number) {
+        if (confirm('Are you sure you want to cancel this payment? This will record the cancellation for audit purposes.')) {
+            this.isLoading = true;
+            this.api.deleteData(`payment/${id}`).subscribe({
+                next: (res) => {
+                    this.loadHistory();
+                },
+                error: (err) => {
+                    this.isLoading = false;
+                    alert(err.error?.message || 'Error cancelling payment');
+                    console.error(err);
+                }
+            });
+        }
+    }
+
+    isLatestPayment(payment: any): boolean {
+        const activePayments = this.payments.filter(p => p.status !== 'CANCELLED');
+        if (activePayments.length === 0) return false;
+        return activePayments[0].id === payment.id;
+    }
+
+    canShowRefund(payment: any): boolean {
+        if (payment.status === 'CANCELLED' || payment.status === 'REFUNDED') return false;
+        const refundAmt = parseFloat(payment.refundAmount || '0');
+        return refundAmt <= 0;
     }
 
     printReceipt(payment: any) {
@@ -113,5 +143,51 @@ export class PaymentHistoryDialogComponent implements OnInit {
         const date = new Date();
         date.setMonth(monthNum - 1);
         return date.toLocaleString('default', { month: 'long' });
+    }
+
+    getExtraAmount(payment: any): number {
+        const paid = parseFloat(payment.amountPaid);
+        const total = parseFloat(payment.totalAmount);
+        if (paid > total) {
+            return paid - total;
+        }
+        return 0;
+    }
+
+    openRefundDialog(payment: any): void {
+        const maxRefund = parseFloat(payment.amountPaid);
+        const extraPaid = this.getExtraAmount(payment);
+        const defaultRefund = extraPaid > 0 ? extraPaid : '';
+
+        const refundAmount = prompt(`Enter refund amount (Max: ₹${maxRefund}):`, defaultRefund.toString());
+
+        if (refundAmount === null) return; // User cancelled
+
+        const refundAmountNum = parseFloat(refundAmount);
+
+        if (isNaN(refundAmountNum) || refundAmountNum <= 0 || refundAmountNum > maxRefund) {
+            alert('Invalid refund amount. Please enter a value between 0 and ' + maxRefund);
+            return;
+        }
+
+        const refundNotes = prompt('Reason for refund (optional):') || 'Overpayment refund';
+
+        if (confirm(`Issue refund of ₹${refundAmountNum} to ${this.data.userName}?`)) {
+            this.isLoading = true;
+            this.api.postData(`payment/${payment.id}/refund`, {
+                refundAmount: refundAmountNum,
+                refundNotes: refundNotes
+            }).subscribe({
+                next: (res: any) => {
+                    alert(`Refund of ₹${refundAmountNum} recorded successfully. Please return the cash to the student.`);
+                    this.loadHistory();
+                },
+                error: (err) => {
+                    this.isLoading = false;
+                    alert(err.error?.message || 'Error processing refund');
+                    console.error(err);
+                }
+            });
+        }
     }
 }

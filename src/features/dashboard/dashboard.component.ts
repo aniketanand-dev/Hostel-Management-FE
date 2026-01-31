@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ApiService } from '../../app/core/services/api.service';
 import { MaterialModule } from '../../shared/materials/materials.module';
 import { CommonModule } from '@angular/common';
@@ -12,7 +13,7 @@ import { ExportService } from '../../app/core/services/export.service';
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
     private api = inject(ApiService);
     private exportService = inject(ExportService);
     stats: any[] = [];
@@ -21,17 +22,54 @@ export class DashboardComponent implements OnInit {
     selectedBuildingId: number | null = null;
     upcomingPayments: any[] = [];
     studentsLeavingSoon: any[] = [];
+    studentsInNotice: any[] = [];
+    countdownInterval: any;
 
     recentActivities = [
         { user: 'Admin', action: 'System statistics updated', time: 'Just now', icon: 'sync' },
         { user: 'Student', action: 'New registration pending', time: '10 mins ago', icon: 'person_add' }
     ];
 
+    private platformId = inject(PLATFORM_ID);
+
     constructor() { }
 
     ngOnInit(): void {
-        this.loadBuildings();
-        this.loadUpcomingPayments();
+        if (isPlatformBrowser(this.platformId)) {
+            this.loadBuildings();
+            this.loadUpcomingPayments();
+            this.startCountdownTimer();
+        }
+    }
+
+    ngOnDestroy(): void {
+        if (this.countdownInterval) {
+            clearInterval(this.countdownInterval);
+        }
+    }
+
+    startCountdownTimer(): void {
+        this.countdownInterval = setInterval(() => {
+            this.updateCountdowns();
+        }, 1000);
+    }
+
+    updateCountdowns(): void {
+        const now = new Date().getTime();
+        this.studentsInNotice.forEach(student => {
+            const end = new Date(student.plannedCheckoutDate).getTime();
+            const diff = end - now;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+                student.countdown = `${days}d ${hours}h ${mins}m ${secs}s`;
+            } else {
+                student.countdown = 'Time Up!';
+            }
+        });
     }
 
     loadUpcomingPayments(): void {
@@ -80,6 +118,8 @@ export class DashboardComponent implements OnInit {
                         { label: 'Available Beds', value: data.availableBeds?.toString() || '0', icon: 'door_front', color: '#ec4899', trend: 'Ready' }
                     ];
                     this.studentsLeavingSoon = data.studentsLeavingSoon || [];
+                    this.studentsInNotice = data.studentsInNotice || [];
+                    this.updateCountdowns();
                 }
             },
             error: (err: any) => {

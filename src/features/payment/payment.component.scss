@@ -238,3 +238,29 @@
     align-items: center;
     z-index: 50;
 }
+
+// Tabs
+.payment-tabs {
+    margin-bottom: 24px;
+    
+    ::ng-deep .mat-mdc-tab-labels {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 4px;
+    }
+    
+    ::ng-deep .mat-mdc-tab {
+        min-width: 150px;
+    }
+}
+
+// Paid Badge
+.paid-badge {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 600;
+    color: #059669;
+    background: #d1fae5;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+}

@@ -38,6 +38,12 @@
                 <mat-label>Amount Paying Now</mat-label>
                 <div class="currency-prefix">₹</div>
                 <input matInput type="number" formControlName="amountPaid" class="amount-input">
+                <mat-error *ngIf="paymentForm.get('amountPaid')?.hasError('max')">
+                    Amount cannot exceed total due (₹{{data.balance}})
+                </mat-error>
+                <mat-error *ngIf="paymentForm.get('amountPaid')?.hasError('required')">
+                    Amount is required
+                </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">
