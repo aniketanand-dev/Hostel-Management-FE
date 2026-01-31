@@ -1,12 +1,25 @@
-<mat-toolbar color="primary" class="navbar">
-    <button mat-icon-button (click)="menuToggle.emit()">
-        <mat-icon>menu</mat-icon>
-    </button>
+<mat-toolbar class="navbar glass-panel">
+    <div class="nav-container">
+        <button mat-icon-button (click)="menuToggle.emit()" class="menu-btn">
+            <mat-icon>menu</mat-icon>
+        </button>
 
-    <span (click)="home()" class="logo">HSM Portal</span>
-    <span class="spacer"></span>
+        <div class="brand" (click)="home()">
+            <div class="brand-icon grad-bg">
+                <mat-icon>apartment</mat-icon>
+            </div>
+            <span class="brand-name">Hostel<span>Connect</span></span>
+        </div>
 
-    <button mat-icon-button (click)="logout()">
-        <mat-icon>logout</mat-icon>
-    </button>
+        <span class="spacer"></span>
+
+        <div class="user-actions">
+            <button mat-icon-button class="action-btn">
+                <mat-icon>notifications_none</mat-icon>
+            </button>
+            <button mat-icon-button class="logout-btn" (click)="logout()" matTooltip="Logout">
+                <mat-icon>logout</mat-icon>
+            </button>
+        </div>
+    </div>
 </mat-toolbar>

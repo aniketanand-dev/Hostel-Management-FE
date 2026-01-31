@@ -1,0 +1,46 @@
+<div class="dialog-wrapper">
+    <div class="dialog-header">
+        <h2>Submit Complaint</h2>
+        <button mat-icon-button mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="dialog-content">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Subject</mat-label>
+                <input matInput formControlName="title" placeholder="e.g. Fan not working">
+            </mat-form-field>
+
+            <div class="row">
+                <mat-form-field appearance="outline" class="half-width">
+                    <mat-label>Category</mat-label>
+                    <mat-select formControlName="type">
+                        <mat-option *ngFor="let t of types" [value]="t">{{t}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                    <mat-label>Priority</mat-label>
+                    <mat-select formControlName="priority">
+                        <mat-option *ngFor="let p of priorities" [value]="p">{{p}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Description</mat-label>
+                <textarea matInput formControlName="description" rows="5" placeholder="Describe the issue in detail..."></textarea>
+            </mat-form-field>
+        </div>
+
+        <div class="dialog-actions">
+            <button mat-button type="button" mat-dialog-close>Cancel</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || isLoading">
+                <span *ngIf="!isLoading">Submit Complaint</span>
+                <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+            </button>
+        </div>
+    </form>
+</div>

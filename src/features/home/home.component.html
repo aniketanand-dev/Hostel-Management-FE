@@ -1,9 +1,54 @@
-<div class="hostel-container">
-    <ng-container *ngFor="let item of tokens">
-        <div class="hostel-card" (click)="openHostelPopup(item)">
-            <h3>{{ item.hostelName }}</h3>
-            <p>{{ item.roleName }}</p>
+<div class="home-wrapper">
+    <!-- Optional Navbar for Selection Page if needed, otherwise just a header -->
+    <header class="home-header glass-panel">
+        <div class="brand">
+            <div class="brand-icon grad-bg">
+                <mat-icon>apartment</mat-icon>
+            </div>
+            <span class="brand-name">Hostel<span>Connect</span></span>
+        </div>
+        <button mat-icon-button (click)="logout()" matTooltip="Logout">
+            <mat-icon>logout</mat-icon>
+        </button>
+    </header>
+
+    <main class="selection-box">
+        <div class="intro-text">
+            <h1>Welcome back!</h1>
+            <p>Please select the hostel you would like to manage today.</p>
         </div>
 
-    </ng-container>
+        <div class="hostel-grid">
+            <mat-card class="hostel-card animate-fade-in" 
+                      *ngFor="let item of tokens; let i = index" 
+                      [style.animation-delay]="i * 0.1 + 's'"
+                      (click)="openHostelPopup(item)">
+                <div class="card-image-box grad-bg">
+                    <mat-icon>business</mat-icon>
+                </div>
+                <mat-card-content>
+                    <h3>{{ item.hostelName }}</h3>
+                    <div class="role-tag">
+                        <mat-icon>badge</mat-icon>
+                        {{ item.roleName }}
+                    </div>
+                </mat-card-content>
+                <div class="card-footer">
+                    <span>Manage Hostel</span>
+                    <mat-icon>arrow_forward</mat-icon>
+                </div>
+            </mat-card>
+            
+            <!-- Add New Placeholder -->
+            <mat-card class="hostel-card add-card animate-fade-in" style="animation-delay: 0.3s" (click)="openAddHostelDialog()">
+                <div class="add-icon-box">
+                    <mat-icon>add</mat-icon>
+                </div>
+                <mat-card-content>
+                    <h3>Add New Hostel</h3>
+                    <p>Register a new location</p>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </main>
 </div>

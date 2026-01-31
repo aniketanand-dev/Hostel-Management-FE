@@ -1,0 +1,240 @@
+.page-container {
+    padding: 24px 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+
+    .header-content {
+        h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: -0.5px;
+        }
+        p {
+            margin: 6px 0 0;
+            color: #64748b;
+            font-size: 16px;
+        }
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+        
+        .export-btn {
+            color: #64748b;
+            border-color: #cbd5e1;
+        }
+    }
+}
+
+.content-card {
+    background: #ffffff; // Fallback
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 400px;
+    position: relative;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); 
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.full-width-table {
+    width: 100%;
+}
+
+// Table Styles
+.mat-mdc-table {
+    background: transparent;
+}
+
+.mat-mdc-header-row {
+    background: #f8fafc;
+}
+
+.mat-mdc-header-cell {
+    color: #475569;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 24px 24px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.mat-mdc-cell {
+    padding: 16px 24px;
+    color: #334155;
+    font-size: 14px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.element-row:hover {
+    background: #f8fafc;
+}
+
+// Column Specifics
+.student-profile {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .avatar-placeholder {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 16px;
+        box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+    }
+
+    .info {
+        display: flex;
+        flex-direction: column;
+        
+        .name {
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .email {
+            font-size: 13px;
+            color: #64748b;
+        }
+    }
+}
+
+.amount-badge {
+    font-family: 'Roboto Mono', monospace; // or standard font
+    font-weight: 600;
+    color: #0f172a;
+    background: #f1f5f9;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.date-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #64748b;
+    
+    .tiny-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        opacity: 0.7;
+    }
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    
+    .badge-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+    }
+
+    &.status-overdue {
+        background: #fee2e2;
+        color: #ef4444;
+    }
+
+    &.status-pending {
+        background: #fff7ed;
+        color: #f97316;
+    }
+}
+
+.priority-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+
+    &.red { background: #ef4444; box-shadow: 0 0 0 2px #fee2e2; }
+    &.orange { background: #f59e0b; box-shadow: 0 0 0 2px #fef3c7; }
+}
+
+.pay-btn {
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+
+// Empty State
+.empty-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px;
+    text-align: center;
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #f0fdf4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+
+        mat-icon {
+            font-size: 40px;
+            width: 40px;
+            height: 40px;
+            color: #22c55e;
+        }
+    }
+
+    h3 {
+        margin: 0 0 8px;
+        font-size: 20px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    p {
+        margin: 0;
+        color: #64748b;
+        max-width: 300px;
+    }
+}
+
+// Loading
+.loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+}

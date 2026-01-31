@@ -1,0 +1,40 @@
+<div class="dialog-wrapper">
+    <div class="dialog-header">
+        <h2>Edit Menu - {{data.day}}</h2>
+        <button mat-icon-button mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="dialog-content">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Breakfast</mat-label>
+                <input matInput formControlName="breakfast" placeholder="e.g. Idli, Sambar">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Lunch</mat-label>
+                <input matInput formControlName="lunch" placeholder="e.g. Rice, Dal, Curd">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Snacks</mat-label>
+                <input matInput formControlName="snacks" placeholder="e.g. Tea, Biscuits">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Dinner</mat-label>
+                <input matInput formControlName="dinner" placeholder="e.g. Chapati, Curry">
+            </mat-form-field>
+        </div>
+
+        <div class="dialog-actions">
+            <button mat-button type="button" mat-dialog-close>Cancel</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || isLoading">
+                <span *ngIf="!isLoading">Save Menu</span>
+                <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+            </button>
+        </div>
+    </form>
+</div>

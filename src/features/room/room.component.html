@@ -1,0 +1,396 @@
+<div class="room-dashboard">
+    <header class="dashboard-header">
+        <div class="header-content">
+            <h1>Room & Bed Management</h1>
+            <p>Floor {{floorId}} | Building {{buildingId}}</p>
+        </div>
+        <button mat-flat-button color="primary" (click)="openAddRoom()">
+            <mat-icon>add</mat-icon> New Room
+        </button>
+    </header>
+
+    <div class="rooms-grid" *ngIf="!isLoading; else loading">
+        <div class="room-card" *ngFor="let room of rooms">
+            <div class="room-header">
+                <div class="header-left">
+                    <h3>Room {{room.roomNumber}}</h3>
+                    <span class="room-type">{{room.type}}</span>
+                </div>
+                <button mat-icon-button [matMenuTriggerFor]="roomMenu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #roomMenu="matMenu">
+                    <button mat-menu-item (click)="addBed(room)">
+                        <mat-icon>add</mat-icon>
+                        <span>Add Bed</span>
+                    </button>
+                    <button mat-menu-item (click)="openEditRoom(room)">
+                        <mat-icon>edit</mat-icon>
+                        <span>Edit Room</span>
+                    </button>
+                    <button mat-menu-item color="warn" (click)="confirmDeleteRoom(room)">
+                        <mat-icon color="warn">delete</mat-icon>
+                        <span style="color: #ef4444">Delete Room</span>
+                    </button>
+                </mat-menu>
+            </div>
+            <div class="room-info">
+                <p><mat-icon>payments</mat-icon> ₹{{room.currentPrice}}</p>
+                <p><mat-icon>groups</mat-icon> {{room.beds.length}}/{{room.capacity}} Beds</p>
+            </div>
+            
+            <div class="beds-container">
+                    <div class="bed-item" *ngFor="let bed of room.beds"
+                        [style.border-color]="getBedColor(bed.status)"
+                        [class.occupied]="bed.status === 'OCCUPIED'">
+                        <div class="bed-info" (click)="openAllocation(room, bed)">
+                            <mat-icon [style.color]="getBedColor(bed.status)">bed</mat-icon>
+                            <div class="bed-details">
+                                <span class="bed-number">Bed {{bed.bedNumber}}</span>
+                                <span class="bed-status"
+                                      [title]="bed.status === 'OCCUPIED' ? 'Occupied by ' + (bed.allocations?.[0]?.user?.name || 'Unknown') : bed.status">
+                                    {{ bed.status === 'OCCUPIED' ? (bed.allocations?.[0]?.user?.name || 'Occupied') : bed.status }}
+                                </span>
+                                <span class="notice-badge" *ngIf="bed.allocations?.[0]?.plannedCheckoutDate">
+                                    Leaves: {{ bed.allocations[0].plannedCheckoutDate | date:'MMM d' }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="bed-actions">
+                            <button mat-icon-button color="primary" *ngIf="bed.status === 'OCCUPIED'" (click)="openPayment(room, bed)" title="Collect Rent">
+                                <mat-icon>payments</mat-icon>
+                            </button>
+                            <button mat-icon-button [matMenuTriggerFor]="bedMenu" class="more-btn">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #bedMenu="matMenu">
+                                <button mat-menu-item (click)="editBed(bed)">
+                                    <mat-icon>edit</mat-icon>
+                                    <span>Edit Bed</span>
+                                </button>
+                                <button mat-menu-item *ngIf="bed.status === 'OCCUPIED'" (click)="openTransfer(bed)">
+                                    <mat-icon>move_up</mat-icon>
+                                    <span>Transfer Student</span>
+                                </button>
+                                <button mat-menu-item *ngIf="bed.status === 'OCCUPIED'" (click)="openNotice(bed)">
+                                    <mat-icon>event_note</mat-icon>
+                                    <span>Give Notice</span>
+                                </button>
+                                <button mat-menu-item *ngIf="bed.status === 'OCCUPIED'" (click)="checkoutStudent(bed)" class="delete-action">
+                                    <mat-icon class="delete-action">logout</mat-icon>
+                                    <span>Checkout/Leave</span>
+                                </button>
+                                <button mat-menu-item color="warn" (click)="confirmDeleteBed(bed)" [disabled]="bed.status === 'OCCUPIED'">
+                                    <mat-icon color="warn">delete</mat-icon>
+                                    <span style="color: #ef4444">Delete Bed</span>
+                                </button>
+                            </mat-menu>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+        <div class="no-rooms" *ngIf="rooms.length === 0">
+            <mat-icon>meeting_room</mat-icon>
+            <p>No rooms found on this floor. Create one to get started.</p>
+        </div>
+    </div>
+
+    <ng-template #loading>
+        <div class="loading-state">
+            <mat-spinner diameter="40"></mat-spinner>
+            <p>Loading rooms...</p>
+        </div>
+    </ng-template>
+</div>
+
+<!-- Add Room Modal -->
+<div class="modal-backdrop" *ngIf="showAddRoomModal">
+    <div class="modal-content">
+        <h2>Add New Room</h2>
+        <div class="form-group">
+            <mat-form-field appearance="outline">
+                <mat-label>Room Number</mat-label>
+                <input matInput [(ngModel)]="newRoom.roomNumber" placeholder="e.g. 101">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+                <mat-label>Room Type</mat-label>
+                <mat-select [(ngModel)]="newRoom.type">
+                    <mat-option value="SINGLE">Single</mat-option>
+                    <mat-option value="DOUBLE">Double</mat-option>
+                    <mat-option value="TRIPLE">Triple</mat-option>
+                    <mat-option value="FOUR">Four Bed</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Base Price</mat-label>
+                <input matInput type="number" [(ngModel)]="newRoom.basePrice" placeholder="Monthly rent">
+            </mat-form-field>
+        </div>
+        <div class="modal-actions">
+            <button mat-button (click)="closeAddRoom()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="saveRoom()">Create Room</button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Room Modal -->
+<div class="modal-backdrop" *ngIf="showEditRoomModal">
+    <div class="modal-content glass-panel">
+        <header class="modal-header">
+            <mat-icon color="primary">edit</mat-icon>
+            <div class="header-text">
+                <h2>Edit Room {{editRoomData.roomNumber}}</h2>
+            </div>
+            <button mat-icon-button (click)="closeEditRoom()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </header>
+
+        <div class="modal-body" style="padding: 20px;">
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Room Number</mat-label>
+                <input matInput [(ngModel)]="editRoomData.roomNumber">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Monthly Rent</mat-label>
+                <input matInput type="number" [(ngModel)]="editRoomData.basePrice">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Status</mat-label>
+                <mat-select [(ngModel)]="editRoomData.status">
+                    <mat-option value="AVAILABLE">Available</mat-option>
+                    <mat-option value="PARTIAL">Partial</mat-option>
+                    <mat-option value="FULL">Full</mat-option>
+                    <mat-option value="MAINTENANCE">Maintenance</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="modal-actions">
+            <button mat-button (click)="closeEditRoom()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="updateRoomInfo()">Update Room</button>
+        </div>
+    </div>
+</div>
+
+<!-- Allocation Modal -->
+<div class="modal-backdrop" *ngIf="showAllocationModal">
+    <div class="modal-content">
+        <h2>Allocate Bed</h2>
+        <p>Room {{selectedRoom?.roomNumber}} - Bed {{selectedBed?.bedNumber}}</p>
+        
+        <div class="form-group">
+            <mat-form-field appearance="outline">
+                <mat-label>Select Student</mat-label>
+                <mat-select [(ngModel)]="allocationData.userId">
+                    <mat-option *ngFor="let student of students" [value]="student.id">
+                        {{student.name}} ({{student.email}})
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Start Date</mat-label>
+                <input matInput type="date" [(ngModel)]="allocationData.startDate">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Allocation Type</mat-label>
+                <mat-select [(ngModel)]="allocationData.allocationType">
+                    <mat-option value="REGULAR">Regular</mat-option>
+                    <mat-option value="TEMP">Temporary</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="modal-actions">
+            <button mat-button (click)="closeAllocation()">Cancel</button>
+            <button mat-flat-button color="success" (click)="allocateBed()">Confirm Allocation</button>
+        </div>
+    </div>
+</div>
+
+<!-- Rent Payment Modal -->
+<div class="modal-backdrop" *ngIf="showPaymentModal">
+    <div class="modal-content glass-panel animate-scale-in">
+        <header class="modal-header">
+            <mat-icon color="primary">payments</mat-icon>
+            <div class="header-text">
+                <h2>Collect Rent</h2>
+                <p>Occupant: {{selectedBed?.allocations?.[0]?.user?.name}}</p>
+            </div>
+            <button mat-icon-button (click)="closePayment()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </header>
+
+        <div class="modal-body">
+            <div class="rent-details" *ngIf="selectedBed?.allocations?.[0]">
+                <div class="rent-row">
+                    <span>Monthly Rent:</span>
+                    <span class="rent-value">₹{{selectedBed.allocations[0].monthlyRent}}</span>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <mat-form-field appearance="outline">
+                    <mat-label>Amount Paid</mat-label>
+                    <input matInput type="number" [(ngModel)]="paymentData.amountPaid">
+                    <mat-icon matPrefix>currency_rupee</mat-icon>
+                </mat-form-field>
+
+                <div class="date-row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Month</mat-label>
+                        <mat-select [(ngModel)]="paymentData.forMonth">
+                            <mat-option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">
+                                {{ getMonthName(m) }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Year</mat-label>
+                        <input matInput type="number" [(ngModel)]="paymentData.forYear">
+                    </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Notes</mat-label>
+                    <textarea matInput [(ngModel)]="paymentData.notes"></textarea>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button mat-button (click)="closePayment()">Cancel</button>
+            <button mat-flat-button color="primary" 
+                    [disabled]="!paymentData.amountPaid" 
+                    (click)="savePayment()">
+                <mat-icon>save</mat-icon>
+                Confirm Payment
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Bed Modal -->
+<div class="modal-backdrop" *ngIf="showEditBedModal">
+    <div class="modal-content glass-panel">
+        <header class="modal-header">
+            <mat-icon color="primary">edit</mat-icon>
+            <div class="header-text">
+                <h2>Edit Bed #{{editBedData.bedNumber}}</h2>
+            </div>
+            <button mat-icon-button (click)="closeEditBedModal()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </header>
+
+        <div class="modal-body" style="padding: 20px;">
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Bed Number</mat-label>
+                <input matInput [(ngModel)]="editBedData.bedNumber">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Status</mat-label>
+                <mat-select [(ngModel)]="editBedData.status" [disabled]="editBedData.status === 'OCCUPIED'">
+                    <mat-option value="AVAILABLE">Available</mat-option>
+                    <mat-option value="MAINTENANCE">Maintenance</mat-option>
+                    <mat-option value="OCCUPIED" *ngIf="editBedData.status === 'OCCUPIED'">Occupied</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <p *ngIf="editBedData.status === 'OCCUPIED'" style="color: #ef4444; font-size: 12px;">
+                Occupied beds cannot change status.
+            </p>
+        </div>
+
+        <div class="modal-actions">
+            <button mat-button (click)="closeEditBedModal()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="updateBed()">Update</button>
+        </div>
+    </div>
+</div>
+
+<!-- Transfer Modal -->
+<div class="modal-backdrop" *ngIf="showTransferModal">
+    <div class="modal-content glass-panel animate-scale-in">
+        <header class="modal-header">
+            <mat-icon color="primary">move_up</mat-icon>
+            <div class="header-text">
+                <h2>Transfer Room</h2>
+                <p>Move student to a new bed</p>
+            </div>
+            <button mat-icon-button (click)="closeTransfer()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </header>
+
+        <div class="modal-body" style="padding: 24px;">
+            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                Select a destination bed from the available options on this floor.
+            </p>
+            
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Target Bed</mat-label>
+                <mat-select [(ngModel)]="transferData.newBedId">
+                    <mat-option *ngFor="let bed of availableBeds" [value]="bed.id">
+                        Room {{bed.roomNumber}} - Bed {{bed.bedNumber}}
+                    </mat-option>
+                </mat-select>
+                <mat-hint *ngIf="availableBeds.length === 0" style="color: #ef4444">No available beds on this floor</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width: 100%; margin-top: 24px;">
+                <mat-label>Transfer Date</mat-label>
+                <input matInput type="date" [(ngModel)]="transferData.transferDate">
+            </mat-form-field>
+        </div>
+
+        <div class="modal-actions" style="padding: 16px 24px; background: #f8fafc;">
+            <button mat-button (click)="closeTransfer()">Cancel</button>
+            <button mat-flat-button color="primary" [disabled]="!transferData.newBedId" (click)="saveTransfer()">
+                Confirm Move
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Notice Modal -->
+<div class="modal-backdrop" *ngIf="showNoticeModal">
+    <div class="modal-content glass-panel animate-scale-in">
+        <header class="modal-header">
+            <mat-icon color="primary">event_note</mat-icon>
+            <div class="header-text">
+                <h2>Departure Notice</h2>
+                <p>Record planned checkout date</p>
+            </div>
+            <button mat-icon-button (click)="closeNotice()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </header>
+
+        <div class="modal-body" style="padding: 24px;">
+            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                Input the date the student plans to leave. If they stay past this date, extra charges will be calculated automatically.
+            </p>
+            
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Planned Checkout Date</mat-label>
+                <input matInput type="date" [(ngModel)]="noticeData.plannedDate">
+            </mat-form-field>
+        </div>
+
+        <div class="modal-actions" style="padding: 16px 24px; background: #f8fafc;">
+            <button mat-button (click)="closeNotice()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="saveNotice()">
+                Confirm Notice
+            </button>
+        </div>
+    </div>
+</div>

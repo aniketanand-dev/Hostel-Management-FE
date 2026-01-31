@@ -11,6 +11,8 @@ import { MaterialModule } from '../../../shared/materials/materials.module';
 export class SignUpComponent {
     registerForm!: FormGroup;
     isLoading = false;
+    hidePassword = true;
+    hideConfirmPassword = true;
 
     constructor(private fb: FormBuilder) { }
 

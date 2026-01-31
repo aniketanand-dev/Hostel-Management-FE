@@ -12,7 +12,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../../../app/core/services/user.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-student-form',
@@ -26,6 +28,7 @@ import { ActivatedRoute } from '@angular/router';
         MatCardModule,
         MatIconModule,
         MatDividerModule,
+        MatSnackBarModule,
         MatSlideToggleModule],
     templateUrl: './student-form.component.html',
     styleUrl: './student-form.component.scss'
@@ -33,11 +36,15 @@ import { ActivatedRoute } from '@angular/router';
 export class StudentFormComponent {
     studentForm!: FormGroup;
     roleName: 'STAFF' | 'STUDENT' = 'STUDENT';
+    studentId: number | null = null;
+    isEditMode = false;
 
     constructor(
         private fb: FormBuilder,
         private userService: UserService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private router: Router,
+        private snackBar: MatSnackBar
     ) {
         this.createForm();
         this.readQueryParams();
@@ -59,6 +66,31 @@ export class StudentFormComponent {
             } else {
                 this.roleName = 'STUDENT';
             }
+
+            if (params['id']) {
+                this.studentId = +params['id'];
+                this.isEditMode = true;
+                this.loadUserData(this.studentId.toString());
+            }
+        });
+    }
+
+    loadUserData(id: string) {
+        const obs = this.roleName === 'STUDENT'
+            ? this.userService.getStudentById(id)
+            : this.userService.getStudentById(id); // assuming we can use same or similar for staff
+
+        obs.subscribe({
+            next: (res: any) => {
+                if (res.success) {
+                    this.studentForm.patchValue({
+                        name: res.data.name,
+                        email: res.data.email,
+                        gender: res.data.gender || '',
+                        isActive: res.data.isActive !== undefined ? res.data.isActive : true
+                    });
+                }
+            }
         });
     }
 
@@ -69,14 +101,22 @@ export class StudentFormComponent {
                 roleName: this.roleName
             };
 
-            console.log('Payload:', payload);
+            const obs = this.isEditMode && this.studentId
+                ? this.userService.updateUser(this.studentId, payload)
+                : this.userService.createUser(payload);
 
-            this.userService.createUser(payload).subscribe({
+            obs.subscribe({
                 next: (res) => {
-                    console.log('✅ User created successfully:', res);
+                    this.snackBar.open(`${this.roleName} ${this.isEditMode ? 'updated' : 'created'} successfully`, 'Close', {
+                        duration: 3000,
+                        panelClass: ['success-snackbar']
+                    });
+                    this.router.navigate([this.roleName === 'STUDENT' ? '/students' : '/staffs']);
                 },
                 error: (err) => {
-                    console.error('❌ Error creating user:', err);
+                    this.snackBar.open(err.error?.message || `Error ${this.isEditMode ? 'updating' : 'creating'} user`, 'Close', {
+                        duration: 3000
+                    });
                 }
             });
         }

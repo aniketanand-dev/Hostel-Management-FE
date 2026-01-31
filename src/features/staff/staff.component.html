@@ -54,6 +54,10 @@
                     <mat-icon>delete</mat-icon>
                     Delete
                 </button>
+                <button mat-menu-item (click)="promoteStaff(element)" *ngIf="isSuperAdmin && element.roleName !== 'ADMIN'">
+                    <mat-icon>admin_panel_settings</mat-icon>
+                    Promote to Admin
+                </button>
             </mat-menu>
         </td>
     </ng-container>
@@ -62,3 +66,63 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
 </table>
+
+<!-- Staff Details Modal -->
+<div class="modal-overlay" *ngIf="showDetailsModal">
+    <div class="modal-container glass-panel animate-slide-up">
+        <div class="modal-header">
+            <div class="header-main">
+                <mat-icon class="header-icon">admin_panel_settings</mat-icon>
+                <div class="header-titles">
+                    <h2>Staff Details</h2>
+                    <p>Internal staff profile overview</p>
+                </div>
+            </div>
+            <button mat-icon-button (click)="closeDetails()" class="close-btn">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <div class="modal-content">
+            <div class="details-grid">
+                <!-- Profile Section -->
+                <div class="details-section">
+                    <h3>Basic Information</h3>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span class="label">Staff Name</span>
+                            <span class="value">{{selectedUser?.name}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Official Email</span>
+                            <span class="value">{{selectedUser?.email}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Joining Date</span>
+                            <span class="value">{{selectedUser?.joinDate | date:'mediumDate'}}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Section -->
+                <div class="details-section">
+                    <h3>Account Status</h3>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span class="label">Active Status</span>
+                            <span class="value" style="color: #166534">ACTIVE</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Role Type</span>
+                            <span class="value">Hostel Staff</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button mat-stroked-button color="primary" (click)="closeDetails()">Close Window</button>
+        </div>
+    </div>
+</div>

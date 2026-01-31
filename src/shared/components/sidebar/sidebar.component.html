@@ -1,29 +1,25 @@
-<!--<mat-nav-list>
-    <ng-container *ngFor="let item of features">
+<div class="sidebar-wrapper">
+    <div class="menu-section">
+        <mat-nav-list>
+            <a mat-list-item
+                *ngFor="let item of features"
+                [routerLink]="item.path"
+                routerLinkActive="menu-active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="navigate.emit()"
+                class="sidebar-item"
+                disableRipple>
+                <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+                <span matListItemTitle>{{ item.name }}</span>
+            </a>
+        </mat-nav-list>
+    </div>
 
-        <a mat-list-item
-            [routerLink]="item.path"
-            routerLinkActive="active"
-            (click)="navigate.emit()">
-
-            <mat-icon>{{ item.icon }}</mat-icon>
-            <span>{{ item.name }}</span>
-
-        </a>
-
-    </ng-container>
-</mat-nav-list>-->
-
-<mat-nav-list>
-    <a mat-list-item
-        *ngFor="let item of features"
-        [routerLink]="item.path"
-        routerLinkActive="menu-active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        disableRipple>
-
-        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-        <span matListItemTitle>{{ item.name }}</span>
-
-    </a>
-</mat-nav-list>
+    <div class="sidebar-footer">
+        <div class="help-card grad-bg">
+            <mat-icon>help_outline</mat-icon>
+            <p>Need support?</p>
+            <button mat-button class="support-btn">Contact Us</button>
+        </div>
+    </div>
+</div>

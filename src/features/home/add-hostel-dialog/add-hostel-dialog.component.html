@@ -1,0 +1,43 @@
+<div class="dialog-container">
+    <div class="dialog-header">
+        <h2>Add New Hostel</h2>
+        <button mat-icon-button mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <form [formGroup]="hostelForm" (ngSubmit)="onSubmit()">
+        <div class="form-content">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Hostel Name</mat-label>
+                <input matInput formControlName="hostelName" placeholder="e.g. Green Valley Hostel">
+                <mat-error *ngIf="hostelForm.get('hostelName')?.hasError('required')">
+                    Hostel Name is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Location</mat-label>
+                <input matInput formControlName="location" placeholder="e.g. New York, NY">
+                <mat-error *ngIf="hostelForm.get('location')?.hasError('required')">
+                    Location is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Capacity</mat-label>
+                <input matInput type="number" formControlName="capacity">
+                <mat-error *ngIf="hostelForm.get('capacity')?.hasError('required')">
+                    Capacity is required
+                </mat-error>
+            </mat-form-field>
+        </div>
+        
+        <div class="dialog-actions">
+            <button mat-button type="button" mat-dialog-close>Cancel</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="hostelForm.invalid || isLoading">
+                <span *ngIf="!isLoading">Create Hostel</span>
+                <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+            </button>
+        </div>
+    </form>
+</div>

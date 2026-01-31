@@ -1,29 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../app/core/services/api.service';
-import { NgForOf } from "../../../node_modules/@angular/common/common_module.d-NEF7UaHr";
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../app/core/services/auth.service';
 import { HostelPopupComponent } from './hostel-popup/hostel-popup.component';
 import { Router } from '@angular/router';
+import { MaterialModule } from '../../shared/materials/materials.module';
+import { AddHostelDialogComponent } from './add-hostel-dialog/add-hostel-dialog.component';
 
 interface TokenData {
     hostelName: string;
     roleName: string;
     token: string;
+    hostelId: number;
 }
 
 interface HomeApiData {
     success: boolean;
     tokens: TokenData[];
 }
+
 @Component({
     selector: 'app-home',
-    imports: [CommonModule],
+    imports: [CommonModule, MaterialModule],
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
     data!: HomeApiData;
     tokens: TokenData[] = [];
     constructor(
@@ -34,13 +37,30 @@ export class HomeComponent {
     ) { }
 
     ngOnInit(): void {
+        this.loadHostels();
+    }
+
+    loadHostels() {
         this._api.getData('hostels').subscribe({
             next: (res: HomeApiData) => {
                 console.log(res);
                 this.data = res;
                 this.tokens = res?.tokens;
             }
-        })
+        });
+    }
+
+    openAddHostelDialog() {
+        const dialogRef = this.dialog.open(AddHostelDialogComponent, {
+            width: '500px'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                // Refresh list if added successfully
+                this.loadHostels();
+            }
+        });
     }
 
     openHostelPopup(item: any) {
@@ -75,5 +95,7 @@ export class HomeComponent {
         });
     }
 
-
+    logout() {
+        this.authService.logout();
+    }
 }

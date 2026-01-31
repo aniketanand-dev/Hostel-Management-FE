@@ -1,0 +1,58 @@
+<div class="page-container animate-fade-in">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Food Menu</h1>
+            <p>Weekly meal plan and schedule.</p>
+        </div>
+        <!-- Maybe a button to print menu? -->
+    </div>
+
+    <div class="grid-container" *ngIf="!isLoading">
+        <div class="day-card glass-panel" *ngFor="let day of days">
+            <div class="card-header">
+                <h3>{{day}}</h3>
+                <button mat-icon-button (click)="editMenu(day)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+            </div>
+            
+            <div class="meal-section">
+                <div class="meal-row">
+                    <mat-icon class="meal-icon">bakery_dining</mat-icon>
+                    <div class="meal-content">
+                        <label>Breakfast</label>
+                        <p>{{getMenuForDay(day).breakfast || 'Not set'}}</p>
+                    </div>
+                </div>
+
+                <div class="meal-row">
+                    <mat-icon class="meal-icon">lunch_dining</mat-icon>
+                    <div class="meal-content">
+                        <label>Lunch</label>
+                        <p>{{getMenuForDay(day).lunch || 'Not set'}}</p>
+                    </div>
+                </div>
+
+                 <div class="meal-row">
+                    <mat-icon class="meal-icon">coffee</mat-icon>
+                    <div class="meal-content">
+                        <label>Snacks</label>
+                        <p>{{getMenuForDay(day).snacks || 'Not set'}}</p>
+                    </div>
+                </div>
+
+                <div class="meal-row">
+                    <mat-icon class="meal-icon">dinner_dining</mat-icon>
+                    <div class="meal-content">
+                        <label>Dinner</label>
+                        <p>{{getMenuForDay(day).dinner || 'Not set'}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <div *ngIf="isLoading" class="loading-state">
+        <mat-spinner diameter="40"></mat-spinner>
+    </div>
+</div>

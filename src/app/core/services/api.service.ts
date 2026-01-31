@@ -21,4 +21,17 @@ export class ApiService {
     postData(endPoint: string, payload: any): Observable<any> {
         return this.http.post(`${this.baseUrl}/${endPoint}`, payload)
     }
+
+    putData(endPoint: string, payload: any): Observable<any> {
+        return this.http.put(`${this.baseUrl}/${endPoint}`, payload)
+    }
+
+    patchData(endPoint: string, payload: any): Observable<any> {
+        return this.http.patch(`${this.baseUrl}/${endPoint}`, payload)
+    }
+
+    deleteData(endPoint: string, id?: any): Observable<any> {
+        const url = id ? `${this.baseUrl}/${endPoint}/${id}` : `${this.baseUrl}/${endPoint}`;
+        return this.http.delete(url);
+    }
 }

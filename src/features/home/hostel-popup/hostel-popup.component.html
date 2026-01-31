@@ -1,22 +1,30 @@
-<h2 mat-dialog-title>{{ data.hostelName }}</h2>
+<div class="popup-container">
+    <div class="popup-header">
+        <div class="icon-box grad-bg">
+            <mat-icon>security</mat-icon>
+        </div>
+        <h2 mat-dialog-title>Select Your Role</h2>
+        <p>You have multiple roles in <strong>{{ data.hostelName }}</strong></p>
+    </div>
 
-<mat-dialog-content>
-    <mat-radio-group [(ngModel)]="selectedRoleId">
-        <mat-radio-button
-            *ngFor="let role of hostelData"
-            [value]="role.token">
-            {{ role.roleName }}
-        </mat-radio-button>
-    </mat-radio-group>
-</mat-dialog-content>
+    <mat-dialog-content>
+        <mat-radio-group [(ngModel)]="selectedRoleId" class="role-list">
+            <div *ngFor="let role of hostelData" class="role-item" [class.selected]="selectedRoleId === role.token">
+                <mat-radio-button [value]="role.token">
+                    <div class="role-info">
+                        <span class="role-name">{{ role.roleName }}</span>
+                        <span class="role-desc">Access management features as {{ role.roleName }}</span>
+                    </div>
+                </mat-radio-button>
+            </div>
+        </mat-radio-group>
+    </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button
-        mat-raised-button
-        color="primary"
-        [disabled]="!selectedRoleId"
-        [mat-dialog-close]="selectedRoleId">
-        Confirm
-    </button>
-</mat-dialog-actions>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close class="cancel-btn">Cancel</button>
+        <button mat-flat-button color="primary" class="confirm-btn"
+                [disabled]="!selectedRoleId" [mat-dialog-close]="selectedRoleId">
+            Continue to Dashboard
+        </button>
+    </mat-dialog-actions>
+</div>

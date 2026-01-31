@@ -1,54 +1,91 @@
-/* Dialog Title */
-.dialog-title {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 8px;
+.popup-container {
+  padding: 12px;
 }
 
-/* Dialog Content */
-.dialog-content {
-  min-width: 320px;
-  padding-top: 8px;
+.popup-header {
+  text-align: center;
+  margin-bottom: 24px;
+  
+  .icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    mat-icon { color: white; }
+  }
+
+  h2 {
+    font-size: 24px;
+    margin: 0 0 4px !important;
+    padding: 0 !important;
+  }
+
+  p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+  }
 }
 
-/* Section title */
-.section-title {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 12px;
-  color: rgba(0, 0, 0, 0.7);
-}
-
-/* Radio group layout */
-.role-group {
+.role-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  padding: 8px 0;
 }
 
-/* Individual radio button */
-.role-radio {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+.role-item {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: var(--background);
+    border-color: var(--primary);
+  }
+
+  &.selected {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+
+  ::ng-deep .mdc-form-field {
+    width: 100%;
+  }
+
+  .role-info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 8px;
+
+    .role-name {
+      font-weight: 600;
+      color: var(--text-main);
+      font-size: 16px;
+    }
+
+    .role-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+  }
 }
 
-/* Hover effect */
-.role-radio:hover {
-  background-color: #f5f5f5;
-  border-color: #bdbdbd;
-}
+.mat-dialog-actions {
+  padding: 24px 0 8px !important;
+  gap: 12px;
 
-/* Selected state */
-.role-radio.mat-radio-checked {
-  background-color: #e3f2fd;
-  border-color: #1976d2;
-}
+  button {
+    height: 44px;
+    border-radius: 8px;
+  }
 
-/* Dialog actions */
-.dialog-actions {
-  margin-top: 16px;
-  padding-top: 8px;
-  border-top: 1px solid #eee;
+  .confirm-btn {
+    background: var(--primary) !important;
+    color: white !important;
+  }
 }

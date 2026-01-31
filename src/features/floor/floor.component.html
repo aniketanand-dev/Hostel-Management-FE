@@ -1,0 +1,133 @@
+<div class="dashboard-container animate-fade-in">
+    <header class="page-header">
+        <div class="header-text">
+            <h1>Floor Management</h1>
+            <p>Configuring floors for <span class="highlight">{{ buildingName }}</span></p>
+        </div>
+        <div class="header-actions">
+            <button mat-flat-button color="primary" (click)="openAddFloorPopup()" class="grad-btn">
+                <mat-icon>add_circle</mat-icon>
+                Generate Floors
+            </button>
+        </div>
+    </header>
+
+    <div class="floor-grid" *ngIf="floors.length > 0; else emptyState">
+        <div *ngFor="let floor of floors" class="floor-card glass-panel animate-slide-up">
+            <div class="floor-icon-box grad-bg">
+                <mat-icon>layers</mat-icon>
+            </div>
+            
+            <div class="floor-info">
+                <div class="floor-header">
+                    <h3>Floor {{ floor.floorNumber }}</h3>
+                    <button mat-icon-button [matMenuTriggerFor]="menu" class="more-btn">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu" class="modern-menu">
+                        <button mat-menu-item (click)="openEditFloor(floor)">
+                            <mat-icon>edit</mat-icon>
+                            <span>Rename Floor</span>
+                        </button>
+                        <button mat-menu-item (click)="deleteFloor(floor)" class="delete-action">
+                            <mat-icon>delete</mat-icon>
+                            <span>Remove Floor</span>
+                        </button>
+                    </mat-menu>
+                </div>
+                
+                <div class="stats-row">
+                    <div class="stat">
+                        <span class="stat-label">Total Rooms</span>
+                        <span class="stat-value">{{ floor.roomCount }}</span>
+                    </div>
+                </div>
+
+                <div class="card-actions">
+                    <button mat-stroked-button color="primary" (click)="goToRooms(floor)" class="w-full">
+                        <mat-icon>meeting_room</mat-icon>
+                        Manage Rooms
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #emptyState>
+        <div class="empty-notif glass-panel animate-fade-in">
+            <mat-icon>layers_clear</mat-icon>
+            <h3>No Floors Found</h3>
+            <p>This building doesn't have any floors yet. Use the "Generate Floors" button to get started.</p>
+        </div>
+    </ng-template>
+</div>
+
+<!-- ADD FLOOR MODAL -->
+<div class="modal-overlay" *ngIf="showAddFloorPopup" (click)="closeAddFloorPopup()">
+    <div class="modal-content glass-panel animate-scale-up" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <div class="header-main">
+                <mat-icon class="header-icon">add_circle</mat-icon>
+                <div class="header-titles">
+                    <h2>Auto-Generate Floors</h2>
+                    <p>Quickly setup your building structure</p>
+                </div>
+            </div>
+            <button mat-icon-button (click)="closeAddFloorPopup()" class="close-btn">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        
+        <div class="modal-body">
+            <p class="modal-desc">Enter the total number of floors for this building. We'll automatically create missing floors from 1 to the number you specify.</p>
+            
+            <mat-form-field appearance="outline" class="w-full custom-field">
+                <mat-label>Total Floors</mat-label>
+                <input matInput type="number" [(ngModel)]="newFloorNumber" min="1" placeholder="Ex. 5">
+                <mat-icon matPrefix>layers</mat-icon>
+            </mat-form-field>
+        </div>
+
+        <div class="modal-footer">
+            <button mat-stroked-button (click)="closeAddFloorPopup()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="addFloor()" [disabled]="!newFloorNumber || isSubmitting" class="grad-btn">
+                <mat-spinner diameter="20" *ngIf="isSubmitting" style="margin-right: 8px;"></mat-spinner>
+                {{ isSubmitting ? 'Generating...' : 'Start Generation' }}
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT FLOOR MODAL -->
+<div class="modal-overlay" *ngIf="showEditFloorModal" (click)="closeEditFloor()">
+    <div class="modal-content glass-panel animate-scale-up" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <div class="header-main">
+                <mat-icon class="header-icon">edit</mat-icon>
+                <div class="header-titles">
+                    <h2>Rename Floor</h2>
+                    <p>Modify floor numbering</p>
+                </div>
+            </div>
+            <button mat-icon-button (click)="closeEditFloor()" class="close-btn">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        
+        <div class="modal-body">
+            <mat-form-field appearance="outline" class="w-full custom-field">
+                <mat-label>Floor Number</mat-label>
+                <input matInput type="number" [(ngModel)]="editFloorData.floorNumber" min="0" placeholder="Ex. 1">
+                <mat-icon matPrefix>layers</mat-icon>
+            </mat-form-field>
+        </div>
+
+        <div class="modal-footer">
+            <button mat-stroked-button (click)="closeEditFloor()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="updateFloor()" [disabled]="!editFloorData.floorNumber || isSubmitting" class="grad-btn">
+                <mat-spinner diameter="20" *ngIf="isSubmitting" style="margin-right: 8px;"></mat-spinner>
+                {{ isSubmitting ? 'Updating...' : 'Save Changes' }}
+            </button>
+        </div>
+    </div>
+</div>

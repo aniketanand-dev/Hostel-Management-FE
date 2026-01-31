@@ -18,4 +18,8 @@ export class StaffService {
     getStaff() {
         return this.apiService.getData("staffs");
     }
+
+    getStaffById(id: string) {
+        return this.apiService.getData(`staffs/${id}`);
+    }
 }

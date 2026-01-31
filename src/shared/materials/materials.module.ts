@@ -18,6 +18,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatListModule } from '@angular/material/list';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 @NgModule({
@@ -43,7 +47,11 @@ import { MatMenuModule } from '@angular/material/menu';
         MatSelectModule,
         MatDialogModule,
         MatTableModule,
-        MatMenuModule
+        MatMenuModule,
+        MatListModule,
+        MatChipsModule,
+        MatDatepickerModule,
+        MatNativeDateModule
     ],
     exports: [
         CommonModule,
@@ -66,7 +74,11 @@ import { MatMenuModule } from '@angular/material/menu';
         MatSelectModule,
         MatDialogModule,
         MatTableModule,
-        MatMenuModule
+        MatMenuModule,
+        MatListModule,
+        MatChipsModule,
+        MatDatepickerModule,
+        MatNativeDateModule
     ]
 })
 export class MaterialModule { }

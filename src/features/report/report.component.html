@@ -1,0 +1,119 @@
+<div class="page-container animate-fade-in">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Reports & Analytics</h1>
+            <p>Monthly insights on fees and attendance.</p>
+        </div>
+        
+        <div class="filters">
+            <button mat-icon-button color="primary" [matMenuTriggerFor]="exportMenu" matTooltip="Export Report">
+                <mat-icon>file_download</mat-icon>
+            </button>
+            <mat-menu #exportMenu="matMenu">
+                <button mat-menu-item (click)="exportFees()">Fees Report (CSV)</button>
+                <button mat-menu-item (click)="exportAttendance()">Attendance Report (CSV)</button>
+            </mat-menu>
+
+            <mat-form-field appearance="outline" class="compact-field">
+                <mat-label>Month</mat-label>
+                <mat-select [formControl]="monthControl" (selectionChange)="refresh()">
+                    <mat-option *ngFor="let m of months" [value]="m.val">{{m.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="compact-field">
+                <mat-label>Year</mat-label>
+                <input matInput type="number" [formControl]="yearControl" (change)="refresh()">
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="tabs-container glass-panel">
+        <mat-tab-group animationDuration="0ms">
+            <!-- Fee Report Tab -->
+            <mat-tab label="Fee Collection">
+                <div class="table-wrapper">
+                    <table mat-table [dataSource]="feeData" class="full-width-table">
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef> Student </th>
+                            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="bed">
+                            <th mat-header-cell *matHeaderCellDef> Bed No </th>
+                            <td mat-cell *matCellDef="let element"> {{element.bedNo}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="rent">
+                            <th mat-header-cell *matHeaderCellDef> Monthly Rent </th>
+                            <td mat-cell *matCellDef="let element"> ₹{{element.rent}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="paid">
+                            <th mat-header-cell *matHeaderCellDef> Paid </th>
+                            <td mat-cell *matCellDef="let element" class="text-green"> ₹{{element.paid}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="due">
+                            <th mat-header-cell *matHeaderCellDef> Due </th>
+                            <td mat-cell *matCellDef="let element" class="text-red"> ₹{{element.due}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="status">
+                            <th mat-header-cell *matHeaderCellDef> Status </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span class="status-badge {{element.status.toLowerCase()}}">{{element.status}}</span>
+                            </td>
+                        </ng-container>
+                        
+                        <tr mat-header-row *matHeaderRowDef="feeColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: feeColumns;"></tr>
+                    </table>
+                    
+                    <div class="empty-msg" *ngIf="!isLoading && feeData.length === 0">No data available</div>
+                </div>
+            </mat-tab>
+
+            <!-- Attendance Report Tab -->
+            <mat-tab label="Attendance Summary">
+                <div class="table-wrapper">
+                    <table mat-table [dataSource]="attData" class="full-width-table">
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef> Student </th>
+                            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="present">
+                            <th mat-header-cell *matHeaderCellDef> Present </th>
+                            <td mat-cell *matCellDef="let element" class="bold text-green"> {{element.present}} Days </td>
+                        </ng-container>
+                        
+                        <ng-container matColumnDef="absent">
+                            <th mat-header-cell *matHeaderCellDef> Absent </th>
+                            <td mat-cell *matCellDef="let element" class="bold text-red"> {{element.absent}} Days </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="leave">
+                            <th mat-header-cell *matHeaderCellDef> On Leave </th>
+                            <td mat-cell *matCellDef="let element"> {{element.leave}} Days </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="late">
+                            <th mat-header-cell *matHeaderCellDef> Late </th>
+                            <td mat-cell *matCellDef="let element"> {{element.late}} Days </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="attColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: attColumns;"></tr>
+                    </table>
+
+                    <div class="empty-msg" *ngIf="!isLoading && attData.length === 0">No attendance records found</div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+
+        <div *ngIf="isLoading" class="loading-overlay">
+            <mat-spinner diameter="40"></mat-spinner>
+        </div>
+    </div>
+</div>

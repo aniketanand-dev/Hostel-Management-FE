@@ -1,0 +1,25 @@
+.dialog-container {
+    padding: 24px;
+    min-width: 400px;
+}
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    h2 {
+        margin: 0;
+        font-weight: 600;
+        color: #333;
+    }
+}
+.full-width {
+    width: 100%;
+    margin-bottom: 16px; 
+}
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+}

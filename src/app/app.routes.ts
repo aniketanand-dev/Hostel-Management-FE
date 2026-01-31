@@ -58,6 +58,36 @@ export const routes: Routes = [
                 loadChildren: () =>
                     import('./../features/building/building.routes').then(m => m.buildingRoutes)
             },
+            {
+                path: 'payments',
+                loadComponent: () =>
+                    import('./../features/payment/payment.component').then(m => m.PaymentComponent)
+            },
+            {
+                path: 'complaints',
+                loadComponent: () =>
+                    import('./../features/complaint/complaint.component').then(m => m.ComplaintComponent)
+            },
+            {
+                path: 'food',
+                loadComponent: () =>
+                    import('./../features/food/food.component').then(m => m.FoodComponent)
+            },
+            {
+                path: 'attendance',
+                loadComponent: () =>
+                    import('./../features/attendance/attendance.component').then(m => m.AttendanceComponent)
+            },
+            {
+                path: 'notices',
+                loadComponent: () =>
+                    import('./../features/notice/notice.component').then(m => m.NoticeComponent)
+            },
+            {
+                path: 'reports',
+                loadComponent: () =>
+                    import('./../features/report/report.component').then(m => m.ReportComponent)
+            }
             //  {
             //    path: 'reports',
             //    loadComponent: () =>

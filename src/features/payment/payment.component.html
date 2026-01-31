@@ -1,0 +1,115 @@
+<div class="page-container animate-fade-in">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Payments & Dues</h1>
+            <p>Track and manage student fee collections efficiently.</p>
+        </div>
+        <div class="header-actions">
+            <button mat-stroked-button class="export-btn" (click)="exportData()" [disabled]="upcomingPayments.length === 0">
+                <mat-icon>download</mat-icon>
+                Export
+            </button>
+            <button mat-flat-button color="primary" (click)="loadUpcomingPayments()">
+                <mat-icon>refresh</mat-icon>
+                Refresh List
+            </button>
+        </div>
+    </div>
+
+    <div class="content-card glass-panel">
+        <div class="table-wrapper">
+            <table mat-table [dataSource]="upcomingPayments" class="full-width-table">
+                
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Student Name </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="student-profile">
+                            <div class="avatar-placeholder">{{element.userName.charAt(0)}}</div>
+                            <div class="info">
+                                <span class="name">{{element.userName}}</span>
+                                <span class="email">{{element.userEmail}}</span>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+                
+                <!-- Amount Column -->
+                <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef> Pending Amount </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="amount-badge">₹ {{element.balance | number:'1.2-2'}}</span>
+                    </td>
+                </ng-container>
+
+                 <!-- Due Date Column -->
+                 <ng-container matColumnDef="dueDate">
+                    <th mat-header-cell *matHeaderCellDef> Due Date </th>
+                    <td mat-cell *matCellDef="let element" class="text-secondary"> 
+                        <div class="date-info">
+                            <mat-icon class="tiny-icon">calendar_today</mat-icon>
+                            {{element.dueDate | date:'mediumDate'}}
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Status Label -->
+                <ng-container matColumnDef="daysLeft">
+                    <th mat-header-cell *matHeaderCellDef> Time Remaining </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="status-badge" 
+                              [class.status-overdue]="element.isOverdue" 
+                              [class.status-pending]="!element.isOverdue">
+                             <mat-icon class="badge-icon">{{ element.isOverdue ? 'warning' : 'schedule' }}</mat-icon>
+                             {{ element.isOverdue ? 'Overdue by ' + (element.daysLeft * -1) + ' days' : element.daysLeft + ' days left' }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                 <!-- Urgency (Visual) -->
+                 <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> Priority </th>
+                    <td mat-cell *matCellDef="let element"> 
+                        <span class="priority-dot" [class.red]="element.isOverdue" [class.orange]="!element.isOverdue"></span>
+                        {{ element.isOverdue ? 'Critical' : 'Attention' }}
+                    </td>
+                </ng-container>
+
+                <!-- Action Column -->
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef> </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div style="display: flex; gap: 8px;">
+                            <button mat-icon-button (click)="viewHistory(element)" matTooltip="View History">
+                                <mat-icon>history</mat-icon>
+                            </button>
+                            <button mat-stroked-button color="primary" class="pay-btn" (click)="recordPayment(element)">
+                                Record Payment
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></tr>
+
+                <!-- Empty State -->
+                <tr class="mat-row" *noDataRow>
+                    <td class="mat-cell empty-cell" colspan="6">
+                        <div class="empty-layout">
+                            <div class="icon-circle">
+                                <mat-icon>check</mat-icon>
+                            </div>
+                            <h3>All Caught Up!</h3>
+                            <p>No pending payments found at the moment.</p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <div *ngIf="isLoading" class="loading-overlay">
+            <mat-spinner diameter="40"></mat-spinner>
+        </div>
+    </div>
+</div>

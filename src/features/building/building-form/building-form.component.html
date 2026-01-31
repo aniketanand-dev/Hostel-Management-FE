@@ -1,29 +1,43 @@
-<mat-card>
-    <mat-card-title>Create Building</mat-card-title>
+<div class="form-container animate-fade-in">
+    <mat-card class="glass-panel form-card">
+        <header class="form-header">
+            <div class="icon-container grad-bg">
+                <mat-icon>{{ isEdit ? 'edit_business' : 'add_business' }}</mat-icon>
+            </div>
+            <div class="header-text">
+                <h2>{{ isEdit ? 'Edit Building' : 'Add New Building' }}</h2>
+                <p>{{ isEdit ? 'Update building configuration and details.' : 'Register a new building for your hostel.' }}</p>
+            </div>
+        </header>
 
-    <form [formGroup]="buildingForm" (ngSubmit)="submit()">
+        <mat-divider></mat-divider>
 
-        <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Building Name</mat-label>
-            <input matInput formControlName="buildingName" />
+        <form [formGroup]="buildingForm" (ngSubmit)="submit()" class="modern-form">
+            <div class="form-body">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Building Name</mat-label>
+                    <input matInput formControlName="buildingName" placeholder="e.g. Block A, Main Wing" required>
+                    <mat-icon matPrefix>business</mat-icon>
+                    
+                    <mat-error *ngIf="buildingForm.get('buildingName')?.hasError('required')">
+                        Building name is required
+                    </mat-error>
+                    <mat-error *ngIf="buildingForm.get('buildingName')?.hasError('minlength')">
+                        Minimum 2 characters required
+                    </mat-error>
+                </mat-form-field>
+            </div>
 
-            <mat-error
-                *ngIf="buildingForm.get('buildingName')?.hasError('required')">
-                Building name is required
-            </mat-error>
-
-            <mat-error
-                *ngIf="buildingForm.get('buildingName')?.hasError('minlength')">
-                Minimum 2 characters required
-            </mat-error>
-        </mat-form-field>
-
-        <button mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="buildingForm.invalid || isSubmitting">
-            Create
-        </button>
-
-    </form>
-</mat-card>
+            <footer class="form-actions">
+                <button mat-button type="button" routerLink="/buildings">Cancel</button>
+                <button mat-flat-button color="primary" 
+                        type="submit" 
+                        [disabled]="buildingForm.invalid || isSubmitting">
+                    <mat-icon>{{ isEdit ? 'save' : 'add' }}</mat-icon>
+                    {{ isEdit ? 'Save Changes' : 'Create Building' }}
+                    <mat-spinner diameter="20" *ngIf="isSubmitting"></mat-spinner>
+                </button>
+            </footer>
+        </form>
+    </mat-card>
+</div>

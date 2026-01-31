@@ -6,13 +6,14 @@ import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-login',
-    imports: [ MaterialModule ],
+    imports: [MaterialModule],
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss'
 })
 export class LoginComponent {
     loginForm!: FormGroup;
     isLoading = false;
+    hidePassword = true;
 
     constructor(
         private fb: FormBuilder,
@@ -21,6 +22,10 @@ export class LoginComponent {
     ) { }
 
     ngOnInit(): void {
+        if (this.authService.isLoggedIn()) {
+            this.router.navigate(['home']);
+            return;
+        }
         this.loginForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(6)]]
@@ -34,7 +39,7 @@ export class LoginComponent {
             //console.log(payload);
             this.authService.login(payload).subscribe({
                 next: (res) => {
-                    this.authService.saveToken(res.data.token);
+                    this.authService.saveToken(res.data.token, res.data.user);
                     this.isLoading = false;
                     console.log(res);
                     this.router.navigate(['home'])

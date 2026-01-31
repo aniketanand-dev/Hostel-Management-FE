@@ -1,0 +1,33 @@
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th *ngFor="let col of columns">
+                {{ col.label }}
+            </th>
+            <th *ngIf="actions.length">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor="let row of rows; let i = index">
+            <td *ngFor="let col of columns">
+               {{ row[col.key] }}
+            </td>
+
+            <td *ngIf="actions.length">
+                <button class="btn"
+                    *ngFor="let action of actions"
+                    (click)="action.handler(row)">
+                    View {{ action.label }}
+                </button>
+            </td>
+        </tr>
+
+        <tr *ngIf="!rows || rows.length === 0">
+            <td [attr.colspan]="columns.length + (actions.length ? 1 : 0)">
+                No data found
+            </td>
+        </tr>
+    </tbody>
+</table>

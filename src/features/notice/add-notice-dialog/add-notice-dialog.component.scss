@@ -1,0 +1,33 @@
+.dialog-wrapper {
+    padding: 0;
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    
+    h2 { margin: 0; color: #1e293b; font-size: 20px; }
+}
+
+.dialog-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.dialog-actions {
+    padding: 16px 24px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}

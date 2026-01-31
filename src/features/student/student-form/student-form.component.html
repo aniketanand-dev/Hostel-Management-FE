@@ -1,6 +1,6 @@
 <div class="student-form-container">
     <mat-card>
-        <mat-card-title>Add Student</mat-card-title>
+        <mat-card-title>{{ isEditMode ? 'Edit' : 'Add' }} {{ roleName === 'STUDENT' ? 'Student' : 'Staff' }}</mat-card-title>
 
         <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
             <div class="form-fields">

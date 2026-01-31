@@ -1,58 +1,74 @@
-<div class="container">
-    <section class="section">
-        <button mat-icon-button [matMenuTriggerFor]="menu"
-            aria-label="Example icon-button with a menu">
-            <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item routerLink="/buildings/building-form"
-                [queryParams]="{ type: 'building' }">
-                <mat-icon>building</mat-icon>
-                <span>Add Building</span>
+<div class="dashboard-container animate-fade-in">
+    <header class="page-header">
+        <div class="header-text">
+            <h1>Building Management</h1>
+            <p>Manage physical locations and structures.</p>
+        </div>
+        <div class="header-actions">
+            <button mat-flat-button color="primary" routerLink="/buildings/building-form" [queryParams]="{ type: 'building' }">
+                <mat-icon>add_business</mat-icon>
+                Add New Building
             </button>
-        </mat-menu>
-    </section>
+        </div>
+    </header>
+
+    <mat-card class="table-card glass-panel">
+        <div class="table-header">
+            <mat-form-field appearance="outline" class="search-field">
+                <mat-label>Search buildings...</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Main Block">
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+        </div>
+
+        <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource">
+                <!-- ID Column -->
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef> ID </th>
+                    <td mat-cell *matCellDef="let element"> #{{element.id}} </td>
+                </ng-container>
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="buildingName">
+                    <th mat-header-cell *matHeaderCellDef> Building Name </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="user-cell">
+                            <div class="user-avatar grad-bg">
+                                <mat-icon style="font-size: 18px; width: 18px; height: 18px;">business</mat-icon>
+                            </div>
+                            <span>{{element.buildingName}}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Action Column -->
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef> Action </th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" class="action-btn">
+                            <mat-icon>more_horiz</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu" class="modern-menu">
+                            <button mat-menu-item (click)="editBuilding(element)">
+                                <mat-icon>edit</mat-icon>
+                                <span>Edit Details</span>
+                            </button>
+                            <button mat-menu-item (click)="viewBuilding(element)">
+                                <mat-icon>visibility</mat-icon>
+                                <span>View Floors</span>
+                            </button>
+                            <button mat-menu-item (click)="deleteBuilding(element)" class="delete-action">
+                                <mat-icon>delete</mat-icon>
+                                <span>Delete Building</span>
+                            </button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+            </table>
+        </div>
+    </mat-card>
 </div>
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-    <!-- ID -->
-    <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef>ID</th>
-        <td mat-cell *matCellDef="let element">{{ element.id }}</td>
-    </ng-container>
-
-    <!-- Name -->
-    <ng-container matColumnDef="buildingName">
-        <th mat-header-cell *matHeaderCellDef>Building Name</th>
-        <td mat-cell *matCellDef="let element">{{ element.buildingName }}</td>
-    </ng-container>
-
-    <!-- Action -->
-    <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef>Action</th>
-        <td mat-cell *matCellDef="let element">
-            <button mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-            </button>
-
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="editStudent(element)">
-                    <mat-icon>edit</mat-icon>
-                    Edit
-                </button>
-                <button mat-menu-item (click)="viewStudent(element)">
-                    <mat-icon>visibility</mat-icon>
-                    View
-                </button>
-                <button mat-menu-item (click)="deleteStudent(element)">
-                    <mat-icon>delete</mat-icon>
-                    Delete
-                </button>
-            </mat-menu>
-        </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-</table>

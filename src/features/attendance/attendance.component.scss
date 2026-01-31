@@ -1,0 +1,86 @@
+.page-container {
+    padding: 24px 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    .header-content {
+        h1 { margin: 0; font-size: 28px; font-weight: 700; color: #1e293b; }
+        p { margin: 6px 0 0; color: #64748b; }
+    }
+}
+
+.date-field {
+    width: 200px;
+}
+
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    margin-bottom: 24px;
+    background: white;
+    border-radius: 12px;
+}
+
+.quick-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    span {
+        color: #64748b;
+        font-weight: 500;
+        margin-right: 8px;
+    }
+}
+
+.table-container {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 400px;
+    position: relative;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.full-width-table {
+    width: 100%;
+}
+
+.student-name {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.mat-mdc-radio-button {
+    margin-right: 16px;
+}
+
+// Custom Radio Colors (simulated)
+// Angular Material Radio colors are primary/accent/warn.
+// For custom colors, we rely on mixins or simpler CSS overrides if possible, 
+// strictly speaking we use class-based logic or Material palette.
+// Here we keep it simple.
+
+.loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.empty-state {
+    padding: 40px;
+    text-align: center;
+    color: #94a3b8;
+}

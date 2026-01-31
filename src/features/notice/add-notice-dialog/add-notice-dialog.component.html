@@ -1,0 +1,37 @@
+<div class="dialog-wrapper">
+    <div class="dialog-header">
+        <h2>Post New Notice</h2>
+        <button mat-icon-button mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="dialog-content">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Title</mat-label>
+                <input matInput formControlName="title" placeholder="e.g. Water Supply Maintenance">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Type</mat-label>
+                <mat-select formControlName="type">
+                    <mat-option *ngFor="let t of types" [value]="t">{{t}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Content</mat-label>
+                <textarea matInput formControlName="content" rows="6" placeholder="Write your announcement here..."></textarea>
+            </mat-form-field>
+        </div>
+
+        <div class="dialog-actions">
+            <button mat-button type="button" mat-dialog-close>Cancel</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || isLoading">
+                <span *ngIf="!isLoading">Post Now</span>
+                <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+            </button>
+        </div>
+    </form>
+</div>

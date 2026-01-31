@@ -1,0 +1,65 @@
+<div class="page-container animate-fade-in">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Attendance</h1>
+            <p>Track daily student presence.</p>
+        </div>
+        <div class="date-picker-box">
+             <mat-form-field appearance="outline" class="date-field">
+                <mat-label>Select Date</mat-label>
+                <input matInput [matDatepicker]="picker" [formControl]="dateControl">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+             </mat-form-field>
+        </div>
+    </div>
+
+    <div class="action-bar glass-panel">
+        <div class="quick-actions">
+            <span>Quick Mark:</span>
+            <button mat-button color="primary" (click)="markAll('PRESENT')">All Present</button>
+            <button mat-button color="warn" (click)="markAll('ABSENT')">All Absent</button>
+        </div>
+        <button mat-flat-button color="primary" (click)="saveAttendance()" [disabled]="isLoading">
+            <mat-icon>save</mat-icon>
+            Save Attendance
+        </button>
+    </div>
+
+    <div class="table-container glass-panel">
+        <table mat-table [dataSource]="students" class="full-width-table">
+            
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Student Name </th>
+                <td mat-cell *matCellDef="let element">
+                     <span class="student-name">{{element.name}}</span>
+                </td>
+            </ng-container>
+
+            <!-- Status Column -->
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-radio-group [(ngModel)]="element.status" color="primary">
+                        <mat-radio-button value="PRESENT" class="status-radio present">Present</mat-radio-button>
+                        <mat-radio-button value="ABSENT" class="status-radio absent">Absent</mat-radio-button>
+                        <mat-radio-button value="LEAVE" class="status-radio leave">Leave</mat-radio-button>
+                        <mat-radio-button value="LATE" class="status-radio late">Late</mat-radio-button>
+                    </mat-radio-group>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        
+        <div *ngIf="isLoading" class="loading-overlay">
+            <mat-spinner diameter="40"></mat-spinner>
+        </div>
+
+        <div *ngIf="!isLoading && students.length === 0" class="empty-state">
+             <p>No students found for this date/hostel.</p>
+        </div>
+    </div>
+</div>

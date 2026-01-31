@@ -1,0 +1,57 @@
+<div class="dialog-wrapper">
+    <div class="dialog-header-enhanced">
+        <div class="icon-box">
+            <mat-icon>payments</mat-icon>
+        </div>
+        <div class="title-section">
+            <h2>Record Payment</h2>
+            <p>Processing payment for <strong>{{data.userName}}</strong></p>
+        </div>
+        <button mat-icon-button mat-dialog-close class="close-btn">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <mat-dialog-content class="form-section">
+        <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+            
+            <div class="amount-display">
+                <span class="label">Total Due</span>
+                <span class="value">₹{{data.balance}}</span>
+            </div>
+
+            <div class="form-grid">
+                <mat-form-field appearance="outline">
+                    <mat-label>For Month</mat-label>
+                    <mat-select formControlName="forMonth">
+                        <mat-option *ngFor="let m of months" [value]="m.value">{{m.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Year</mat-label>
+                    <input matInput type="number" formControlName="forYear">
+                </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width amount-field">
+                <mat-label>Amount Paying Now</mat-label>
+                <div class="currency-prefix">₹</div>
+                <input matInput type="number" formControlName="amountPaid" class="amount-input">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Notes (Optional)</mat-label>
+                <textarea matInput formControlName="notes" rows="3" placeholder="Transaction ID, Receipt No, etc."></textarea>
+            </mat-form-field>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" class="actions-bar">
+        <button mat-button mat-dialog-close class="cancel-btn">Cancel</button>
+        <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="paymentForm.invalid || isLoading" class="confirm-btn">
+            <mat-spinner *ngIf="isLoading" diameter="20" class="spinner-white"></mat-spinner>
+            <span *ngIf="!isLoading">Confirm Payment</span>
+        </button>
+    </mat-dialog-actions>
+</div>

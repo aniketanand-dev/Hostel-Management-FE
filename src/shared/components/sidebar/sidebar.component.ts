@@ -5,6 +5,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { ApiService } from '../../../app/core/services/api.service';
 import { RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 
 export interface Feature {
     name: string;
@@ -22,7 +23,7 @@ export interface HomeResponse {
 
 @Component({
     selector: 'app-sidebar',
-    imports: [CommonModule, RouterLink, MatListModule, MatIconModule, RouterModule],
+    imports: [CommonModule, RouterLink, MatListModule, MatIconModule, RouterModule, MatButtonModule],
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.scss'
 })

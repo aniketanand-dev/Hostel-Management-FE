@@ -1,0 +1,81 @@
+<div class="page-container animate-fade-in">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Appeals & Complaints</h1>
+            <p>Raise issues and track their resolution status.</p>
+        </div>
+        <button mat-flat-button color="primary" (click)="openAddDialog()">
+            <mat-icon>add</mat-icon>
+            New Complaint
+        </button>
+    </div>
+
+    <div class="grid-container">
+        <div class="complaint-card glass-panel" *ngFor="let item of complaints">
+            <div class="card-header">
+                <div class="header-top">
+                    <span class="type-badge">{{item.type}}</span>
+                    <span class="date">{{item.createdAt | date:'mediumDate'}}</span>
+                </div>
+                <h3>{{item.title}}</h3>
+            </div>
+            
+            <div class="card-body">
+                <p>{{item.description}}</p>
+                
+                <div class="sla-info" *ngIf="item.status !== 'RESOLVED'">
+                    <span class="deadline" [class.breached]="item.slaBreached">
+                        <mat-icon>timer</mat-icon>
+                        Deadline: {{item.slaDeadline | date:'short'}}
+                    </span>
+                    <span class="escalation-badge level-{{item.escalationLevel}}" *ngIf="item.escalationLevel > 0">
+                        <mat-icon>trending_up</mat-icon>
+                        {{ getEscalationLabel(item.escalationLevel) }}
+                    </span>
+                    <span class="penalty" *ngIf="item.penaltyAmount > 0">
+                        Penalty: ₹{{item.penaltyAmount}}
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="status-box">
+                    <span class="status-dot {{getStatusClass(item.status)}}"></span>
+                    <span class="status-text">{{item.status.replace('_', ' ')}}</span>
+                </div>
+                <div class="priority-box">
+                    <mat-icon [color]="getPriorityColor(item.priority)">flag</mat-icon>
+                    <span>{{item.priority}}</span>
+                </div>
+            </div>
+
+            <div class="admin-comment" *ngIf="item.adminComment">
+                <strong>Admin:</strong> {{item.adminComment}}
+            </div>
+
+            <div class="card-actions">
+                <button mat-stroked-button color="primary" (click)="replyComplaint(item)" *ngIf="item.status !== 'RESOLVED'">
+                    <mat-icon>reply</mat-icon> Reply
+                </button>
+                <button mat-stroked-button color="success" (click)="resolveComplaint(item)" *ngIf="item.status !== 'RESOLVED'">
+                    <mat-icon>check_circle</mat-icon> Resolve
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteComplaint(item)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!isLoading && complaints.length === 0" class="empty-state">
+        <div class="icon-circle">
+            <mat-icon>thumb_up</mat-icon>
+        </div>
+        <h3>No Complaints</h3>
+        <p>Everything seems to be working perfectly!</p>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-state">
+        <mat-spinner diameter="40"></mat-spinner>
+    </div>
+</div>

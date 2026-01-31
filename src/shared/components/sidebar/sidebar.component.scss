@@ -1,23 +1,85 @@
-/* Active background */
-a.mat-mdc-list-item.menu-active {
-  background-color: rgba(25, 118, 210, 0.15) !important;
-  border-radius: 8px;
+.sidebar-wrapper {
+  height: calc(100vh - 72px);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  background: var(--surface);
+
+  .menu-section {
+    flex: 1;
+  }
 }
 
-/* Active text */
-a.mat-mdc-list-item.menu-active .mat-mdc-list-item-title {
-  color: #0076ec !important;
-  font-weight: 600;
+.sidebar-item {
+  margin-bottom: 8px !important;
+  border-radius: 12px !important;
+  transition: all 0.2s ease !important;
+  height: 48px !important;
+  color: var(--text-muted) !important;
+
+  mat-icon {
+    color: var(--text-muted);
+    margin-right: 12px;
+    font-size: 22px;
+  }
+
+  &:hover {
+    background: var(--background) !important;
+    color: var(--primary) !important;
+
+    mat-icon {
+      color: var(--primary);
+    }
+  }
+
+  &.menu-active {
+    background: var(--primary-light) !important;
+    color: var(--primary) !important;
+
+    mat-icon {
+      color: var(--primary) !important;
+    }
+
+    span {
+      font-weight: 600;
+    }
+  }
 }
 
-/* Active icon */
-a.mat-mdc-list-item.menu-active mat-icon {
-  color: #626568 !important;
-}
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 24px;
 
-/* Prevent hover/focus from overriding active */
-a.mat-mdc-list-item.menu-active:hover,
-a.mat-mdc-list-item.menu-active.cdk-focused,
-a.mat-mdc-list-item.menu-active.cdk-program-focused {
-  background-color: rgba(25, 118, 210, 0.15) !important;
+  .help-card {
+    padding: 20px;
+    border-radius: 16px;
+    color: white;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+
+    mat-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin: 0 0 12px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .support-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 12px;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
 }
