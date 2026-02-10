@@ -6,7 +6,6 @@ import { AuthService } from '../../app/core/services/auth.service';
 import { HostelPopupComponent } from './hostel-popup/hostel-popup.component';
 import { Router } from '@angular/router';
 import { MaterialModule } from '../../shared/materials/materials.module';
-import { AddHostelDialogComponent } from './add-hostel-dialog/add-hostel-dialog.component';
 
 interface TokenData {
     hostelName: string;
@@ -39,7 +38,13 @@ export class HomeComponent implements OnInit {
 
     ngOnInit(): void {
         if (isPlatformBrowser(this.platformId)) {
-            this.loadHostels();
+            // Only load hostels if user is logged in
+            if (this.authService.hasToken()) {
+                this.loadHostels();
+            } else {
+                // Redirect to login if no token
+                this.router.navigate(['/login']);
+            }
         }
     }
 
@@ -49,19 +54,14 @@ export class HomeComponent implements OnInit {
                 console.log(res);
                 this.data = res;
                 this.tokens = res?.tokens;
-            }
-        });
-    }
-
-    openAddHostelDialog() {
-        const dialogRef = this.dialog.open(AddHostelDialogComponent, {
-            width: '500px'
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                // Refresh list if added successfully
-                this.loadHostels();
+            },
+            error: (err) => {
+                console.error('Error loading hostels:', err);
+                // If unauthorized, redirect to login
+                if (err.status === 401 || err.status === 403) {
+                    this.authService.logout();
+                    this.router.navigate(['/login']);
+                }
             }
         });
     }
@@ -77,8 +77,9 @@ export class HomeComponent implements OnInit {
                 // ✅ ONLY ONE ROLE → DIRECT LOGIN
                 if (roles.length === 1) {
                     const roleToken = roles[0].token;
+                    const roleName = roles[0].roleName || roles[0].name;
                     this.authService.saveToken(roleToken);
-                    this.router.navigate(['dashboard']);
+                    this.navigateBasedOnRole(roleName);
                     return;
                 }
 
@@ -88,14 +89,30 @@ export class HomeComponent implements OnInit {
                         hostelId: item.hostelId,
                         roles
                     }
-                }).afterClosed().subscribe(result => {
-                    if (result) {
-                        this.authService.saveToken(result);
-                        this.router.navigate(['dashboard']);
+                }).afterClosed().subscribe((selectedToken: string) => {
+                    if (selectedToken) {
+                        this.authService.saveToken(selectedToken);
+                        // Find the selected role to get its name
+                        const selectedRole = roles.find((r: any) => r.token === selectedToken);
+                        if (selectedRole) {
+                            const roleName = selectedRole.roleName || selectedRole.name;
+                            this.navigateBasedOnRole(roleName);
+                        } else {
+                            this.router.navigate(['dashboard']);
+                        }
                     }
                 });
             }
         });
+    }
+
+    navigateBasedOnRole(roleName: string) {
+        const role = roleName.toUpperCase();
+        if (role === 'STUDENT') {
+            this.router.navigate(['complaints']);
+        } else {
+            this.router.navigate(['dashboard']);
+        }
     }
 
     logout() {

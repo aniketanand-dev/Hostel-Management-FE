@@ -24,13 +24,15 @@ export function toastInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn)
         // Handle errors
         catchError(error => {
             zone.run(() => {
-                toast.error(error.error?.message || 'Something went wrong!');
+                // Only show error toast if it's not a 401/403 (auth errors handled separately)
+                if (error.status !== 401 && error.status !== 403) {
+                    toast.error(error.error?.message || 'Something went wrong!');
+                }
             });
 
-            if (error.status === 401) {
-                zone.run(() => router.navigate(['/login']));
-            }
-
+            // Don't auto-redirect on 401 - let components handle it
+            // This prevents infinite redirect loops
+            
             return throwError(() => error);
         })
     );

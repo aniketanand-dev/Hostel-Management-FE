@@ -116,7 +116,8 @@ export class StudentComponent implements OnInit {
         if (!activeAlloc) return;
 
         this.dialog.open(PaymentHistoryDialogComponent, {
-            width: '800px',
+            width: '90vw',
+            maxWidth: '1400px',
             data: {
                 allocationId: activeAlloc.id,
                 userName: this.selectedUser?.name

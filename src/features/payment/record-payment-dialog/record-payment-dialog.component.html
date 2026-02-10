@@ -1,63 +1,145 @@
 <div class="dialog-wrapper">
-    <div class="dialog-header-enhanced">
-        <div class="icon-box">
-            <mat-icon>payments</mat-icon>
-        </div>
-        <div class="title-section">
-            <h2>Record Payment</h2>
-            <p>Processing payment for <strong>{{data.userName}}</strong></p>
+    <!-- Header -->
+    <div class="dialog-header">
+        <div class="header-content">
+            <mat-icon class="header-icon">payments</mat-icon>
+            <div class="header-text">
+                <h2>Record Payment</h2>
+                <p>Student: <strong>{{data.userName}}</strong></p>
+            </div>
         </div>
         <button mat-icon-button mat-dialog-close class="close-btn">
             <mat-icon>close</mat-icon>
         </button>
     </div>
 
-    <mat-dialog-content class="form-section">
-        <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
-            
-            <div class="amount-display">
-                <span class="label">Total Due</span>
-                <span class="value">₹{{data.balance}}</span>
+    <!-- Scrollable Content -->
+    <mat-dialog-content class="dialog-content">
+        <form [formGroup]="paymentForm">
+            <!-- Section 1: Payment Type Selection -->
+            <div class="content-section">
+                <h3 class="section-title">Payment Type</h3>
+                <div class="payment-type-selector">
+                    <button type="button" 
+                            class="type-btn" 
+                            [class.active]="paymentType === 'monthly'"
+                            (click)="setPaymentType('monthly')">
+                        <mat-icon>calendar_month</mat-icon>
+                        <div class="btn-label">
+                            <div class="btn-title">Monthly Rent</div>
+                            <div class="btn-desc">Regular monthly payment</div>
+                        </div>
+                    </button>
+                    
+                    <button type="button"
+                            class="type-btn" 
+                            [class.active]="paymentType === 'advance'"
+                            (click)="setPaymentType('advance')">
+                        <mat-icon>security</mat-icon>
+                        <div class="btn-label">
+                            <div class="btn-title">Security/Advance</div>
+                            <div class="btn-desc">Deposit or advance payment</div>
+                        </div>
+                    </button>
+                </div>
             </div>
 
-            <div class="form-grid">
-                <mat-form-field appearance="outline">
-                    <mat-label>For Month</mat-label>
-                    <mat-select formControlName="forMonth">
-                        <mat-option *ngFor="let m of months" [value]="m.value">{{m.name}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+            <!-- Section 2: Total Due -->
+            <div class="content-section">
+                <div class="due-card">
+                    <div class="due-label">Outstanding Amount</div>
+                    <div class="due-amount">₹{{data.balance | number:'1.2-2'}}</div>
+                </div>
+            </div>
 
-                <mat-form-field appearance="outline">
-                    <mat-label>Year</mat-label>
-                    <input matInput type="number" formControlName="forYear">
+            <!-- Section 3: Monthly Details (Conditional) -->
+            <div *ngIf="paymentType === 'monthly'" class="content-section">
+                <h3 class="section-title">Month & Year</h3>
+                <div class="form-row-2">
+                    <mat-form-field appearance="outline" class="form-field">
+                        <mat-label>Month</mat-label>
+                        <mat-select formControlName="forMonth">
+                            <mat-option *ngFor="let m of months" [value]="m.value">
+                                {{m.name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>Required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="form-field">
+                        <mat-label>Year</mat-label>
+                        <input matInput type="number" formControlName="forYear">
+                        <mat-error>Required</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Section 4: Amount -->
+            <div class="content-section">
+                <h3 class="section-title">Payment Amount</h3>
+                <mat-form-field appearance="outline" class="amount-field">
+                    <mat-label>{{paymentType === 'advance' ? 'Security Money Amount' : 'Paying Amount'}}</mat-label>
+                    <span matPrefix class="currency">₹&nbsp;</span>
+                    <input matInput type="number" formControlName="amountPaid" step="0.01" min="1">
+                    <mat-error *ngIf="paymentForm.get('amountPaid')?.hasError('required')">
+                        Amount is required
+                    </mat-error>
+                    <mat-error *ngIf="paymentForm.get('amountPaid')?.hasError('min')">
+                        Amount must be greater than 0
+                    </mat-error>
                 </mat-form-field>
             </div>
 
-            <mat-form-field appearance="outline" class="full-width amount-field">
-                <mat-label>Amount Paying Now</mat-label>
-                <div class="currency-prefix">₹</div>
-                <input matInput type="number" formControlName="amountPaid" class="amount-input">
-                <mat-error *ngIf="paymentForm.get('amountPaid')?.hasError('max')">
-                    Amount cannot exceed total due (₹{{data.balance}})
-                </mat-error>
-                <mat-error *ngIf="paymentForm.get('amountPaid')?.hasError('required')">
-                    Amount is required
-                </mat-error>
-            </mat-form-field>
+            <!-- Section 5: Notes -->
+            <div class="content-section">
+                <h3 class="section-title">Transaction Reference</h3>
+                <mat-form-field appearance="outline" class="notes-field">
+                    <mat-label>Notes / Reference</mat-label>
+                    <textarea matInput 
+                              formControlName="notes" 
+                              rows="2"
+                              placeholder="UPI Reference, Check No, Bank Transfer ID, etc."></textarea>
+                    <mat-hint>Optional - Add transaction reference for record keeping</mat-hint>
+                </mat-form-field>
+            </div>
 
-            <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Notes (Optional)</mat-label>
-                <textarea matInput formControlName="notes" rows="3" placeholder="Transaction ID, Receipt No, etc."></textarea>
-            </mat-form-field>
+            <!-- Section 6: Summary -->
+            <div class="content-section">
+                <div class="summary-box">
+                    <h3 class="summary-title">Payment Summary</h3>
+                    <div class="summary-items">
+                        <div class="summary-item">
+                            <span class="summary-label">Payment Type</span>
+                            <span class="summary-value">
+                                {{paymentType === 'advance' ? 'Security/Advance' : 'Monthly Rent'}}
+                            </span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Amount</span>
+                            <span class="summary-value amount">₹{{paymentForm.get('amountPaid')?.value || '0.00' | number:'1.2-2'}}</span>
+                        </div>
+                        <div class="summary-item" *ngIf="paymentType === 'monthly'">
+                            <span class="summary-label">For Month</span>
+                            <span class="summary-value">{{getMonthName()}}, {{paymentForm.get('forYear')?.value}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </mat-dialog-content>
 
-    <mat-dialog-actions align="end" class="actions-bar">
-        <button mat-button mat-dialog-close class="cancel-btn">Cancel</button>
-        <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="paymentForm.invalid || isLoading" class="confirm-btn">
-            <mat-spinner *ngIf="isLoading" diameter="20" class="spinner-white"></mat-spinner>
+    <!-- Footer Actions -->
+    <div class="dialog-footer">
+        <button mat-stroked-button mat-dialog-close class="btn-cancel">
+            Cancel
+        </button>
+        <button mat-flat-button 
+                color="primary" 
+                (click)="onSubmit()" 
+                [disabled]="paymentForm.invalid || isLoading"
+                class="btn-confirm">
+            <mat-spinner *ngIf="isLoading" diameter="16" class="spinner-icon"></mat-spinner>
             <span *ngIf="!isLoading">Confirm Payment</span>
         </button>
-    </mat-dialog-actions>
+    </div>
 </div>

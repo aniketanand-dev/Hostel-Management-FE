@@ -1,98 +1,123 @@
 <div class="dialog-wrapper">
-    <div class="dialog-header-enhanced">
-        <div class="icon-box">
-            <mat-icon>history</mat-icon>
-        </div>
-        <div class="title-section">
-            <h2>Payment History</h2>
-            <p>Transaction log for <strong>{{data.userName}}</strong></p>
+    <!-- Header -->
+    <div class="dialog-header">
+        <div class="header-content">
+            <mat-icon class="header-icon">history</mat-icon>
+            <div class="header-text">
+                <h2>Payment History</h2>
+                <p>Student: <strong>{{data.userName}}</strong></p>
+            </div>
         </div>
         <button mat-icon-button mat-dialog-close class="close-btn">
             <mat-icon>close</mat-icon>
         </button>
     </div>
 
-    <div class="table-container">
-        <table mat-table [dataSource]="payments" *ngIf="!isLoading && payments.length > 0">
-            
-            <!-- Date Column -->
-            <ng-container matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef> Date </th>
-                <td mat-cell *matCellDef="let element"> {{element.paymentDate | date:'shortDate'}} </td>
-            </ng-container>
-
-            <!-- Month Column -->
-            <ng-container matColumnDef="month">
-                <th mat-header-cell *matHeaderCellDef> Month </th>
-                <td mat-cell *matCellDef="let element"> {{element.forMonth}}/{{element.forYear}} </td>
-            </ng-container>
-
-            <!-- Amount Column -->
-            <ng-container matColumnDef="amount">
-                <th mat-header-cell *matHeaderCellDef> Amount </th>
-                <td mat-cell *matCellDef="let element"> 
-                    <div class="font-bold">₹{{element.amountPaid}}</div>
-                    <div *ngIf="getExtraAmount(element) > 0" class="flex items-center gap-1 text-xs text-green-600 font-medium mt-1">
-                        <mat-icon style="font-size: 14px; height: 14px; width: 14px;">add_circle</mat-icon>
-                        <span>+₹{{getExtraAmount(element) | number:'1.2-2'}} Extra</span>
-                    </div>
-                </td>
-            </ng-container>
-
-            <!-- Status Column -->
-            <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef> Status </th>
-                <td mat-cell *matCellDef="let element"> 
-                    <span class="status-pill {{element.status.toLowerCase()}}">{{element.status}}</span>
-                    <div *ngIf="element.refundAmount && element.refundAmount > 0" class="refund-info">
-                        <mat-icon class="refund-icon">undo</mat-icon>
-                        <span>Refunded: ₹{{element.refundAmount}}</span>
-                    </div>
-                </td>
-            </ng-container>
-
-            <!-- Receipt Column -->
-            <ng-container matColumnDef="receipt">
-                <th mat-header-cell *matHeaderCellDef> Receipt </th>
-                <td mat-cell *matCellDef="let element">
-                    <button mat-icon-button class="print-btn" (click)="printReceipt(element)" matTooltip="Print Receipt" [disabled]="element.status === 'CANCELLED'">
-                        <mat-icon>receipt</mat-icon>
-                    </button>
-                </td>
-            </ng-container>
-
-            <!-- Actions Column -->
-            <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef> Actions </th>
-                <td mat-cell *matCellDef="let element">
-                    <button mat-icon-button color="primary" (click)="openRefundDialog(element)" 
-                            *ngIf="canShowRefund(element)"
-                            matTooltip="Issue Refund">
-                        <mat-icon>undo</mat-icon>
-                    </button>
-                    <button mat-icon-button class="cancel-btn-row" (click)="cancelPayment(element.id)" 
-                            *ngIf="element.status !== 'CANCELLED' && isLatestPayment(element)"
-                            matTooltip="Cancel Payment">
-                        <mat-icon>delete_forever</mat-icon>
-                    </button>
-                    <span *ngIf="element.status === 'CANCELLED'" class="cancelled-label">Cancelled</span>
-                    <span *ngIf="element.status === 'REFUNDED'" class="refunded-label">Fully Refunded</span>
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-
-        <div class="empty-state" *ngIf="!isLoading && payments.length === 0">
-            <div class="icon-circle">
-                <mat-icon>history</mat-icon>
-            </div>
-            <p>No payment history found.</p>
+    <!-- Content -->
+    <div class="dialog-content">
+        <!-- Loading State -->
+        <div class="loading-state" *ngIf="isLoading">
+            <mat-spinner diameter="40"></mat-spinner>
+            <p>Loading payment history...</p>
         </div>
 
-        <div class="loading-state" *ngIf="isLoading">
-            <mat-spinner diameter="30"></mat-spinner>
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="!isLoading && payments.length === 0">
+            <mat-icon class="empty-icon">receipt_long</mat-icon>
+            <h3>No Payments Found</h3>
+            <p>No payment records available for this student.</p>
+        </div>
+
+        <!-- Table View -->
+        <div class="table-wrapper" *ngIf="!isLoading && payments.length > 0">
+            <table mat-table [dataSource]="payments" class="payments-table">
+                
+                <!-- Date Column -->
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef>Date</th>
+                    <td mat-cell *matCellDef="let element" class="date-cell">
+                        {{element.paymentDate | date:'MMM dd, yyyy'}}
+                    </td>
+                </ng-container>
+
+                <!-- Month Column -->
+                <ng-container matColumnDef="month">
+                    <th mat-header-cell *matHeaderCellDef>For Month</th>
+                    <td mat-cell *matCellDef="let element" class="month-cell">
+                        <span *ngIf="element.paymentType === 'ADVANCE'" class="badge-advance">Security/Advance</span>
+                        <span *ngIf="element.paymentType !== 'ADVANCE' && element.forMonth && element.forYear">{{element.forMonth}}/{{element.forYear}}</span>
+                        <span *ngIf="element.paymentType !== 'ADVANCE' && !element.forMonth" class="badge-advance">—</span>
+                    </td>
+                </ng-container>
+
+                <!-- Amount Column -->
+                <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef>Amount</th>
+                    <td mat-cell *matCellDef="let element" class="amount-cell">
+                        <div class="amount-main">₹{{element.amountPaid | number:'1.2-2'}}</div>
+                        <div *ngIf="getExtraAmount(element) > 0" class="amount-extra">
+                            +₹{{getExtraAmount(element) | number:'1.2-2'}}
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Notes Column -->
+                <ng-container matColumnDef="notes">
+                    <th mat-header-cell *matHeaderCellDef>Notes</th>
+                    <td mat-cell *matCellDef="let element" class="notes-cell">
+                        <span *ngIf="element.notes" class="notes-text" [title]="element.notes">
+                            {{element.notes | slice:0:28}}{{element.notes.length > 28 ? '...' : ''}}
+                        </span>
+                        <span *ngIf="!element.notes" class="no-notes">—</span>
+                    </td>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef>Status</th>
+                    <td mat-cell *matCellDef="let element" class="status-cell">
+                        <span class="status-badge" [class]="element.status.toLowerCase()">
+                            {{element.status}}
+                        </span>
+                        <div *ngIf="element.refundAmount && element.refundAmount > 0" class="refund-badge">
+                            <mat-icon>undo</mat-icon>
+                            <span>Refunded: ₹{{element.refundAmount | number:'1.2-2'}}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Actions</th>
+                    <td mat-cell *matCellDef="let element" class="actions-cell">
+                        <button mat-icon-button 
+                                matTooltip="Print Receipt"
+                                class="action-btn print-btn"
+                                (click)="printReceipt(element)"
+                                [disabled]="element.status === 'CANCELLED'">
+                            <mat-icon>receipt</mat-icon>
+                        </button>
+                        <button mat-icon-button 
+                                matTooltip="Issue Refund"
+                                class="action-btn refund-btn"
+                                *ngIf="canShowRefund(element)"
+                                (click)="openRefundDialog(element)">
+                            <mat-icon>undo</mat-icon>
+                        </button>
+                        <button mat-icon-button 
+                                matTooltip="Cancel Payment"
+                                class="action-btn cancel-btn"
+                                *ngIf="element.status !== 'CANCELLED' && isLatestPayment(element)"
+                                (click)="cancelPayment(element.id)">
+                            <mat-icon>delete_forever</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <!-- Table Rows -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="payment-row"></tr>
+            </table>
         </div>
     </div>
 </div>

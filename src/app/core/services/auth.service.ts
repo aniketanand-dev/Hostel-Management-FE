@@ -9,6 +9,11 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class AuthService {
     private loginEndpoint = 'login';
+    private registerEndpoint = 'user';
+    private otpSendEndpoint = 'otp/send';
+    private otpVerifyEndpoint = 'otp/verify';
+    private forgetPasswordEndpoint = 'forget/password';
+    private resetPasswordEndpoint = 'resetPassword';
     private isBrowser: boolean;
 
     // BehaviorSubject to track login state
@@ -36,8 +41,28 @@ export class AuthService {
         }
     }
 
+    register(payload: any) {
+        return this.apiService.postData(this.registerEndpoint, payload);
+    }
+
     login(payload: { email: string, password: string }) {
         return this.apiService.postData(this.loginEndpoint, payload);
+    }
+
+    sendOtp(email: string) {
+        return this.apiService.postData(this.otpSendEndpoint, { email });
+    }
+
+    verifyOtp(payload: { email: string, otp: string }) {
+        return this.apiService.postData(this.otpVerifyEndpoint, payload);
+    }
+
+    forgetPassword(payload: { email: string }) {
+        return this.apiService.postData(this.forgetPasswordEndpoint, payload);
+    }
+
+    resetPassword(payload: { email: string, otp: string, newPassword: string, confirmPassword: string }) {
+        return this.apiService.postData(this.resetPasswordEndpoint, payload);
     }
 
     saveToken(token: string, user?: any): void {
@@ -86,7 +111,7 @@ export class AuthService {
     }
 
     // helper to check if token exists
-    private hasToken(): boolean {
+    hasToken(): boolean {
         if (this.isBrowser) {
             return !!localStorage.getItem('token');
         }

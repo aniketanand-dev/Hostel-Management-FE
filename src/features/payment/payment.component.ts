@@ -127,7 +127,8 @@ export class PaymentComponent implements OnInit {
         };
 
         this.dialog.open(PaymentHistoryDialogComponent, {
-            width: '800px',
+            width: '90vw',
+            maxWidth: '1400px',
             data: dataForDialog
         });
     }

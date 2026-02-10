@@ -14,6 +14,8 @@ export class LoginComponent {
     loginForm!: FormGroup;
     isLoading = false;
     hidePassword = true;
+    errorMessage: string = '';
+    successMessage: string = '';
 
     constructor(
         private fb: FormBuilder,
@@ -36,18 +38,24 @@ export class LoginComponent {
         if (this.loginForm.valid) {
             let payload: any = this.loginForm.value
             this.isLoading = true;
-            //console.log(payload);
+            this.errorMessage = '';
+            this.successMessage = '';
+
             this.authService.login(payload).subscribe({
                 next: (res) => {
                     this.authService.saveToken(res.data.token, res.data.user);
                     this.isLoading = false;
-                    console.log(res);
-                    this.router.navigate(['home'])
-                }, error: (err) => {
-                    console.log(err);
-
+                    this.successMessage = 'Login successful! Redirecting...';
+                    setTimeout(() => {
+                        this.router.navigate(['home']);
+                    }, 1500);
+                },
+                error: (err) => {
+                    this.isLoading = false;
+                    this.errorMessage = err.error?.message || 'Login failed. Please try again.';
+                    console.error('Login error:', err);
                 }
-            })
+            });
 
         } else {
             this.loginForm.markAllAsTouched();

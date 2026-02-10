@@ -25,8 +25,13 @@ export class BuildingComponent implements OnInit {
 
     ngOnInit(): void {
         if (isPlatformBrowser(this.platformId)) {
-            this._onBoardingService.getBuilding().subscribe(res => {
-                this.dataSource.data = res.data;
+            this._onBoardingService.getBuilding().subscribe({
+                next: (res) => {
+                    this.dataSource.data = res.data || [];
+                },
+                error: (err) => {
+                    this.snackBar.open(err?.error?.message || 'Failed to load buildings', 'Close', { duration: 3000 });
+                }
             });
         }
     }

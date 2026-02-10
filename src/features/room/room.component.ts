@@ -154,7 +154,7 @@ export class RoomComponent implements OnInit {
                 this.isLoading = false;
             },
             error: (err: any) => {
-                console.error('Error loading rooms', err);
+                this.snackBar.open(err.error?.message || 'Error loading rooms', 'Close', { duration: 3000 });
                 this.isLoading = false;
             }
         });
@@ -165,6 +165,9 @@ export class RoomComponent implements OnInit {
             next: (res: any) => {
                 // Only show students who don't have an active allocation
                 this.students = (res.data || []).filter((s: any) => !s.isAllocated);
+            },
+            error: (err: any) => {
+                this.snackBar.open(err.error?.message || 'Error loading students', 'Close', { duration: 3000 });
             }
         });
     }
@@ -179,10 +182,24 @@ export class RoomComponent implements OnInit {
     }
 
     saveRoom(): void {
-        if (!this.newRoom.roomNumber || !this.newRoom.basePrice) return;
+        if (!this.floorId) {
+            this.snackBar.open('Please select a floor before creating a room', 'Close', { duration: 3000 });
+            return;
+        }
+
+        if (!this.newRoom.roomNumber || !this.newRoom.roomNumber.trim()) {
+            this.snackBar.open('Room number is required', 'Close', { duration: 3000 });
+            return;
+        }
+
+        if (!this.newRoom.basePrice || this.newRoom.basePrice <= 0) {
+            this.snackBar.open('Base price must be greater than 0', 'Close', { duration: 3000 });
+            return;
+        }
 
         const payload = {
             ...this.newRoom,
+            roomNumber: this.newRoom.roomNumber.trim(),
             floorId: this.floorId
         };
 

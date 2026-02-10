@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MaterialModule } from '../../../shared/materials/materials.module';
+import { AuthService } from '../../../app/core/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-sign-up',
@@ -13,8 +15,16 @@ export class SignUpComponent {
     isLoading = false;
     hidePassword = true;
     hideConfirmPassword = true;
+    errorMessage: string = '';
+    successMessage: string = '';
+    showOtpForm = false;
+    otpValue: string = '';
 
-    constructor(private fb: FormBuilder) { }
+    constructor(
+        private fb: FormBuilder,
+        private authService: AuthService,
+        private router: Router
+    ) { }
 
     ngOnInit(): void {
         this.registerForm = this.fb.group({
@@ -38,16 +48,74 @@ export class SignUpComponent {
     onSubmit(): void {
         if (this.registerForm.valid) {
             this.isLoading = true;
-            // In a real app, call a registration service
-            console.log('Registration submitted:', this.registerForm.value);
-            setTimeout(() => {
-                this.isLoading = false;
-                alert('Registration successful! Please check your email for verification.');
-                // Navigate to login or email verification page
-            }, 1500);
+            this.errorMessage = '';
+            
+            const payload = {
+                name: `${this.registerForm.value.firstName} ${this.registerForm.value.lastName}`,
+                email: this.registerForm.value.email,
+                password: this.registerForm.value.password,
+                confirmPassword: this.registerForm.value.confirmPassword
+            };
+
+            // Call backend to register user
+            this.authService.register(payload).subscribe({
+                next: (res: any) => {
+                    this.isLoading = false;
+                    // Send OTP to email
+                    this.sendOtpForVerification(payload.email);
+                },
+                error: (err: any) => {
+                    this.isLoading = false;
+                    this.errorMessage = err.error?.message || 'Registration failed. Please try again.';
+                    console.error('Registration error:', err);
+                }
+            });
         } else {
             this.registerForm.markAllAsTouched();
         }
+    }
+
+    sendOtpForVerification(email: string): void {
+        this.authService.sendOtp(email).subscribe({
+            next: (res: any) => {
+                this.successMessage = 'Registration successful! OTP sent to your email.';
+                this.showOtpForm = true;
+            },
+            error: (err: any) => {
+                this.errorMessage = err.error?.message || 'Failed to send OTP.';
+            }
+        });
+    }
+
+    onOtpChange(event: any): void {
+        this.otpValue = event.target.value;
+    }
+
+    verifyOtp(): void {
+        if (!this.otpValue || this.otpValue.length !== 6) {
+            this.errorMessage = 'Please enter a valid 6-digit OTP';
+            return;
+        }
+
+        this.isLoading = true;
+        const payload = {
+            email: this.registerForm.value.email,
+            otp: this.otpValue
+        };
+
+        this.authService.verifyOtp(payload).subscribe({
+            next: (res: any) => {
+                this.isLoading = false;
+                this.successMessage = 'Email verified successfully! Redirecting to login...';
+                setTimeout(() => {
+                    this.router.navigate(['/auth/login']);
+                }, 2000);
+            },
+            error: (err: any) => {
+                this.isLoading = false;
+                this.errorMessage = err.error?.message || 'OTP verification failed.';
+            }
+        });
     }
 
     // Getters for form controls for easier template access

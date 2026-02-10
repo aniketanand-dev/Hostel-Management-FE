@@ -14,7 +14,7 @@ export class PaymentHistoryDialogComponent implements OnInit {
     payments: any[] = [];
     isLoading = true;
 
-    displayedColumns: string[] = ['date', 'month', 'amount', 'status', 'receipt', 'actions'];
+    displayedColumns: string[] = ['date', 'month', 'amount', 'notes', 'status', 'actions'];
 
     constructor(
         private api: ApiService,

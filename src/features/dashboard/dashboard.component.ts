@@ -37,7 +37,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         if (isPlatformBrowser(this.platformId)) {
             this.loadBuildings();
-            this.loadUpcomingPayments();
             this.startCountdownTimer();
         }
     }
@@ -72,8 +71,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         });
     }
 
-    loadUpcomingPayments(): void {
-        this.api.getData('payment/upcoming').subscribe({
+    loadUpcomingPayments(buildingId: number | null = null): void {
+        const url = buildingId ? `payment/upcoming?buildingId=${buildingId}` : 'payment/upcoming';
+        this.api.getData(url).subscribe({
             next: (res: any) => {
                 if (res.success) {
                     this.upcomingPayments = res.data;
@@ -93,6 +93,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.selectedBuildingId = this.buildings[0].id;
                     this.loadAllocationStatus();
                     this.loadStats(this.selectedBuildingId);
+                    this.loadUpcomingPayments(this.selectedBuildingId);
                 }
             },
             error: (err: any) => {
@@ -162,6 +163,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.selectedBuildingId = event.value;
         this.loadAllocationStatus();
         this.loadStats(this.selectedBuildingId);
+        this.loadUpcomingPayments(this.selectedBuildingId);
     }
 
     viewRoom(item: any): void {

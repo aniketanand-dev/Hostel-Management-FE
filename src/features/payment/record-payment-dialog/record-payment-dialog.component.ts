@@ -14,6 +14,7 @@ import { ApiService } from '../../../app/core/services/api.service';
 export class RecordPaymentDialogComponent implements OnInit {
     paymentForm: FormGroup;
     isLoading = false;
+    paymentType = 'monthly'; // 'monthly' or 'advance'
     months = [
         { value: 1, name: 'January' }, { value: 2, name: 'February' }, { value: 3, name: 'March' },
         { value: 4, name: 'April' }, { value: 5, name: 'May' }, { value: 6, name: 'June' },
@@ -30,7 +31,7 @@ export class RecordPaymentDialogComponent implements OnInit {
         const today = new Date();
         this.paymentForm = this.fb.group({
             allocationId: [data.allocationId, Validators.required],
-            amountPaid: [data.balance, [Validators.required, Validators.min(1), Validators.max(data.balance)]],
+            amountPaid: [data.balance, [Validators.required, Validators.min(1)]],
             forMonth: [today.getMonth() + 1, Validators.required],
             forYear: [today.getFullYear(), Validators.required],
             notes: ['']
@@ -40,10 +41,30 @@ export class RecordPaymentDialogComponent implements OnInit {
     ngOnInit(): void {
     }
 
+    setPaymentType(type: 'monthly' | 'advance') {
+        this.paymentType = type;
+        if (type === 'advance') {
+            this.paymentForm.patchValue({
+                notes: 'Security/Advance Payment'
+            });
+        }
+    }
+
+    getMonthName(): string {
+        const monthValue = this.paymentForm.get('forMonth')?.value;
+        if (!monthValue) return '';
+        const month = this.months.find(m => m.value === monthValue);
+        return month ? month.name : '';
+    }
+
     onSubmit() {
         if (this.paymentForm.valid) {
             this.isLoading = true;
-            this.api.postData('payment', this.paymentForm.value).subscribe({
+            const payload = {
+                ...this.paymentForm.value,
+                paymentType: this.paymentType
+            };
+            this.api.postData('payment', payload).subscribe({
                 next: (res) => {
                     this.isLoading = false;
                     this.dialogRef.close(true);

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../app/core/services/api.service';
@@ -16,7 +15,7 @@ interface TableAction {
 @Component({
     selector: 'app-floor',
     standalone: true,
-    imports: [CommonModule, DataTableComponent, FormsModule, MaterialModule],
+    imports: [CommonModule, FormsModule, MaterialModule],
     templateUrl: './floor.component.html',
     styleUrl: './floor.component.scss'
 })
@@ -91,7 +90,10 @@ export class FloorComponent implements OnInit {
     }
 
     updateFloor(): void {
-        if (!this.editFloorData.floorNumber || isNaN(+this.editFloorData.floorNumber)) return;
+        if (!this.editFloorData.floorNumber || isNaN(+this.editFloorData.floorNumber)) {
+            this.snackBar.open('Valid floor number is required', 'Close', { duration: 3000 });
+            return;
+        }
 
         this.isSubmitting = true;
         this.apiService.putData(`floor/${this.editFloorData.id}`, { floorNumber: +this.editFloorData.floorNumber }).subscribe({
@@ -145,7 +147,10 @@ export class FloorComponent implements OnInit {
 
     // 🔹 POST floor
     addFloor(): void {
-        if (!this.newFloorNumber || this.newFloorNumber <= 0) return;
+        if (!this.newFloorNumber || this.newFloorNumber <= 0) {
+            this.snackBar.open('Floor number must be a positive integer', 'Close', { duration: 3000 });
+            return;
+        }
 
         this.isSubmitting = true;
         const payload = {
