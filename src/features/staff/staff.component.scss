@@ -110,6 +110,19 @@ table {
         font-size: 15px;
         color: var(--text-main);
         font-weight: 500;
+        
+        &.value-with-icon {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          
+          mat-icon {
+             font-size: 18px;
+             width: 18px;
+             height: 18px;
+             color: #10b981;
+          }
+        }
       }
     }
   }

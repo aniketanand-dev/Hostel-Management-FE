@@ -131,7 +131,12 @@
                     <div class="info-list" *ngIf="selectedUser?.RoomAllocations?.length > 0">
                         <div class="info-item">
                             <span class="label">Current Room</span>
-                            <span class="value">Room #{{selectedUser.RoomAllocations[0].bed?.roomId}} (Bed #{{selectedUser.RoomAllocations[0].bed?.bedNumber}})</span>
+                            <span class="value">
+                                {{selectedUser.RoomAllocations[0].bed?.room?.floor?.building?.buildingName}} &bull; 
+                                Floor {{selectedUser.RoomAllocations[0].bed?.room?.floor?.floorNumber}} &bull; 
+                                Room {{selectedUser.RoomAllocations[0].bed?.room?.roomNumber}} 
+                                (Bed {{selectedUser.RoomAllocations[0].bed?.bedNumber}})
+                            </span>
                         </div>
                         <div class="info-item">
                             <span class="label">Monthly Rent</span>

@@ -5,6 +5,7 @@ import { OnBoardingService } from '../../app/core/services/on-boarding.service';
 import { Router, RouterModule } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'app-building',
@@ -13,15 +14,20 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     styleUrl: './building.component.scss'
 })
 export class BuildingComponent implements OnInit {
-    displayedColumns: string[] = ['id', 'buildingName', 'action'];
+    displayedColumns: string[] = ['id', 'buildingName', 'floors', 'rooms', 'totalBeds', 'occupied', 'available', 'occupancy', 'action'];
     dataSource = new MatTableDataSource<any>([]);
 
     constructor(
         private _onBoardingService: OnBoardingService,
         private _router: Router,
         private snackBar: MatSnackBar,
+        private location: Location,
         @Inject(PLATFORM_ID) private platformId: Object
     ) { }
+
+    goBack() {
+        this.location.back();
+    }
 
     ngOnInit(): void {
         if (isPlatformBrowser(this.platformId)) {

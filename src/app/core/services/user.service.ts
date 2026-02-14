@@ -26,4 +26,20 @@ export class UserService {
     getStudentById(id: string) {
         return this.apiService.getData(`students/${id}`);
     }
+
+    getStaffById(id: string) {
+        return this.apiService.getData(`staffs/${id}`);
+    }
+
+    verifyAadhaar(aadhaarNumber: string, name: string): Observable<any> {
+        return this.apiService.postData('verify-aadhaar', { aadhaarNumber, name });
+    }
+
+    verifyAadhaarOtp(otp: string, clientId: string): Observable<any> {
+        return this.apiService.postData('verify-aadhaar-otp', { otp, clientId });
+    }
+
+    verifyOfflineKyc(formData: FormData): Observable<any> {
+        return this.apiService.postData('verify-offline-kyc', formData);
+    }
 }

@@ -94,8 +94,19 @@
                             <span class="value">{{selectedUser?.name}}</span>
                         </div>
                         <div class="info-item">
+                            <span class="label">Contact Number</span>
+                            <span class="value">{{selectedUser?.phoneNumber || 'N/A'}}</span>
+                        </div>
+                        <div class="info-item">
                             <span class="label">Official Email</span>
                             <span class="value">{{selectedUser?.email}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Aadhaar Number</span>
+                            <div class="value value-with-icon">
+                                {{selectedUser?.aadhaarNumber || 'N/A'}}
+                                <mat-icon *ngIf="selectedUser?.isAadhaarVerified" class="verified-icon" color="primary" matTooltip="Verified Identity">verified</mat-icon>
+                            </div>
                         </div>
                         <div class="info-item">
                             <span class="label">Joining Date</span>
@@ -104,17 +115,20 @@
                     </div>
                 </div>
 
-                <!-- Status Section -->
                 <div class="details-section">
-                    <h3>Account Status</h3>
+                    <h3>Address Information</h3>
                     <div class="info-list">
                         <div class="info-item">
-                            <span class="label">Active Status</span>
-                            <span class="value" style="color: #166534">ACTIVE</span>
+                            <span class="label">Permanent Address</span>
+                            <span class="value">{{selectedUser?.permanentAddress || 'N/A'}}</span>
                         </div>
                         <div class="info-item">
-                            <span class="label">Role Type</span>
-                            <span class="value">Hostel Staff</span>
+                            <span class="label">Working Address</span>
+                            <span class="value">{{selectedUser?.workingAddress || 'N/A'}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Temporary Address</span>
+                            <span class="value">{{selectedUser?.temporaryAddress || 'N/A'}}</span>
                         </div>
                     </div>
                 </div>

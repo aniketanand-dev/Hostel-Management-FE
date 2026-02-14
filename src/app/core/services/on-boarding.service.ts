@@ -16,8 +16,9 @@ export class OnBoardingService {
         return this.apiService.postData('building', payload);
     }
 
-    getBuilding(): Observable<any> {
-        return this.apiService.getData('building');
+    getBuilding(availableOnly?: boolean): Observable<any> {
+        const params = availableOnly ? '?availableOnly=true' : '';
+        return this.apiService.getData(`building${params}`);
     }
 
     updateBuilding(id: number, payload: any): Observable<any> {
@@ -33,8 +34,11 @@ export class OnBoardingService {
         return this.apiService.postData('floor', payload);
     }
 
-    getFloors(buildingId?: number): Observable<any> {
-        const params = buildingId ? `?buildingId=${buildingId}` : '';
+    getFloors(buildingId?: number, availableOnly?: boolean): Observable<any> {
+        let params = buildingId ? `?buildingId=${buildingId}` : '';
+        if (availableOnly) {
+            params += (params ? '&' : '?') + 'availableOnly=true';
+        }
         return this.apiService.getData(`floor${params}`);
     }
 
@@ -55,8 +59,11 @@ export class OnBoardingService {
         return this.apiService.postData('room', payload);
     }
 
-    getRooms(floorId?: number): Observable<any> {
-        const params = floorId ? `?floorId=${floorId}` : '';
+    getRooms(floorId?: number, availableOnly?: boolean): Observable<any> {
+        let params = floorId ? `?floorId=${floorId}` : '';
+        if (availableOnly) {
+            params += (params ? '&' : '?') + 'availableOnly=true';
+        }
         return this.apiService.getData(`room${params}`);
     }
 
@@ -77,8 +84,11 @@ export class OnBoardingService {
         return this.apiService.postData('bed', payload);
     }
 
-    getBeds(roomId?: number): Observable<any> {
-        const params = roomId ? `?roomId=${roomId}` : '';
+    getBeds(roomId?: number, availableOnly?: boolean): Observable<any> {
+        let params = roomId ? `?roomId=${roomId}` : '';
+        if (availableOnly) {
+            params += (params ? '&' : '?') + 'availableOnly=true';
+        }
         return this.apiService.getData(`bed${params}`);
     }
 

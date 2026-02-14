@@ -1,15 +1,36 @@
-<div class="room-dashboard">
-    <header class="dashboard-header">
-        <div class="header-content">
-            <h1>Room & Bed Management</h1>
-            <p>Floor {{floorId}} | Building {{buildingId}}</p>
+<div class="room-dashboard animate-fade-in">
+    <div class="page-nav-header">
+        <button class="back-btn" (click)="goBack()">
+            <mat-icon>keyboard_double_arrow_left</mat-icon> Back
+        </button>
+        <div class="breadcrumb-wrapper">
+            <div class="breadcrumb-item" routerLink="/buildings">
+                <mat-icon>apartment</mat-icon>
+                <span>Building</span>
+                <span class="separator">></span>
+            </div>
+            <div class="breadcrumb-item" routerLink="/buildings">
+                <span>Building Management</span>
+                <span class="separator">></span>
+            </div>
+            <div class="breadcrumb-item" [routerLink]="['/buildings/floors']" [queryParams]="{ buildingId: buildingId }">
+                <span>Floor List</span>
+                <span class="separator">></span>
+            </div>
+            <div class="breadcrumb-item" [routerLink]="['/buildings/room']" [queryParams]="{ buildingId: buildingId, floorId: floorId }">
+                <span>Room Management</span>
+                <span class="separator">></span>
+            </div>
         </div>
-        <button mat-flat-button color="primary" (click)="openAddRoom()">
+    </div>
+
+    <header class="dashboard-header">
+        <button mat-flat-button color="primary" (click)="openAddRoom()" [disabled]="!floorId">
             <mat-icon>add</mat-icon> New Room
         </button>
     </header>
 
-    <div class="rooms-grid" *ngIf="!isLoading; else loading">
+    <div class="rooms-grid" *ngIf="floorId && !isLoading; else emptyState">
         <div class="room-card" *ngFor="let room of rooms">
             <div class="room-header">
                 <div class="header-left">
@@ -28,9 +49,11 @@
                         <mat-icon>edit</mat-icon>
                         <span>Edit Room</span>
                     </button>
-                    <button mat-menu-item color="warn" (click)="confirmDeleteRoom(room)">
+                    <button mat-menu-item color="warn" (click)="confirmDeleteRoom(room)" [disabled]="isRoomOccupied(room)">
                         <mat-icon color="warn">delete</mat-icon>
-                        <span style="color: #ef4444">Delete Room</span>
+                        <span [style.color]="isRoomOccupied(room) ? 'inherit' : '#ef4444'">
+                            {{ isRoomOccupied(room) ? 'Cannot Delete (Occupied)' : 'Delete Room' }}
+                        </span>
                     </button>
                 </mat-menu>
             </div>
@@ -40,66 +63,59 @@
             </div>
             
             <div class="beds-container">
-                    <div class="bed-item" *ngFor="let bed of room.beds"
-                        [style.border-color]="getBedColor(bed.status)"
-                        [class.occupied]="bed.status === 'OCCUPIED'">
-                        <div class="bed-info" (click)="openAllocation(room, bed)">
-                            <mat-icon [style.color]="getBedColor(bed.status)">bed</mat-icon>
-                            <div class="bed-details">
-                                <span class="bed-number">Bed {{bed.bedNumber}}</span>
-                                <span class="bed-status"
-                                      [title]="bed.status === 'OCCUPIED' ? 'Occupied by ' + (bed.allocations?.[0]?.user?.name || 'Unknown') : bed.status">
-                                    {{ bed.status === 'OCCUPIED' ? (bed.allocations?.[0]?.user?.name || 'Occupied') : bed.status }}
-                                </span>
-                                <span class="notice-badge" *ngIf="bed.allocations?.[0]?.plannedCheckoutDate">
-                                    Leaves: {{ bed.allocations[0].plannedCheckoutDate | date:'MMM d' }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="bed-actions">
-                            <button mat-icon-button color="primary" *ngIf="bed.status === 'OCCUPIED'" (click)="openPayment(room, bed)" title="Collect Rent">
-                                <mat-icon>payments</mat-icon>
-                            </button>
-                            <button mat-icon-button [matMenuTriggerFor]="bedMenu" class="more-btn">
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
-                            <mat-menu #bedMenu="matMenu">
-                                <button mat-menu-item (click)="editBed(bed)">
-                                    <mat-icon>edit</mat-icon>
-                                    <span>Edit Bed</span>
-                                </button>
-                                <button mat-menu-item *ngIf="bed.status === 'OCCUPIED'" (click)="openTransfer(bed)">
-                                    <mat-icon>move_up</mat-icon>
-                                    <span>Transfer Student</span>
-                                </button>
-                                <button mat-menu-item *ngIf="bed.status === 'OCCUPIED'" (click)="openNotice(bed)">
-                                    <mat-icon>event_note</mat-icon>
-                                    <span>Give Notice</span>
-                                </button>
-                                <button mat-menu-item *ngIf="bed.status === 'OCCUPIED'" (click)="checkoutStudent(bed)" class="delete-action">
-                                    <mat-icon class="delete-action">logout</mat-icon>
-                                    <span>Checkout/Leave</span>
-                                </button>
-                                <button mat-menu-item color="warn" (click)="confirmDeleteBed(bed)" [disabled]="bed.status === 'OCCUPIED'">
-                                    <mat-icon color="warn">delete</mat-icon>
-                                    <span style="color: #ef4444">Delete Bed</span>
-                                </button>
-                            </mat-menu>
+                <div class="bed-item" *ngFor="let bed of room.beds"
+                    [style.border-color]="getBedColor(bed.status)"
+                    [class.occupied]="bed.status === 'OCCUPIED'">
+                    <div class="bed-info" (click)="openAllocation(room, bed)">
+                        <mat-icon [style.color]="getBedColor(bed.status)">bed</mat-icon>
+                        <div class="bed-details">
+                            <span class="bed-number">Bed {{bed.bedNumber}}</span>
+                            <span class="bed-status"
+                                  [title]="bed.status === 'OCCUPIED' ? 'Occupied by ' + (bed.allocations?.[0]?.user?.name || 'Unknown') : bed.status">
+                                {{ bed.status === 'OCCUPIED' ? (bed.allocations?.[0]?.user?.name || 'Occupied') : bed.status }}
+                            </span>
                         </div>
                     </div>
+                    <div class="bed-actions">
+                        <button mat-icon-button color="primary" *ngIf="bed.status === 'OCCUPIED'" (click)="openPayment(room, bed)" title="Collect Rent">
+                            <mat-icon>payments</mat-icon>
+                        </button>
+                        <button mat-icon-button [matMenuTriggerFor]="bedMenu" class="more-btn">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #bedMenu="matMenu">
+                            <button mat-menu-item (click)="editBed(bed)">
+                                <mat-icon>edit</mat-icon>
+                                <span>Edit Bed</span>
+                            </button>
+                            <button mat-menu-item *ngIf="bed.status === 'OCCUPIED'" (click)="openTransfer(bed)">
+                                <mat-icon>move_up</mat-icon>
+                                <span>Transfer Student</span>
+                            </button>
+                            <button mat-menu-item color="warn" (click)="confirmDeleteBed(bed)" [disabled]="bed.status === 'OCCUPIED'">
+                                <mat-icon color="warn">delete</mat-icon>
+                                <span style="color: #ef4444">Delete Bed</span>
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="no-rooms" *ngIf="rooms.length === 0">
-            <mat-icon>meeting_room</mat-icon>
-            <p>No rooms found on this floor. Create one to get started.</p>
         </div>
     </div>
 
-    <ng-template #loading>
-        <div class="loading-state">
+    <ng-template #emptyState>
+        <div class="loading-state" *ngIf="isLoading">
             <mat-spinner diameter="40"></mat-spinner>
             <p>Loading rooms...</p>
+        </div>
+        <div class="no-selection-state" *ngIf="!floorId && !isLoading">
+            <mat-icon size="large">meeting_room</mat-icon>
+            <h2>Room Management</h2>
+            <p>Please select a building and floor to manage rooms and beds.</p>
+        </div>
+        <div class="no-rooms" *ngIf="floorId && !isLoading && rooms.length === 0">
+            <mat-icon>meeting_room</mat-icon>
+            <p>No rooms found on this floor. Create one to get started.</p>
         </div>
     </ng-template>
 </div>

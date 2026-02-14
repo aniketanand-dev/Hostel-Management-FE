@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, PLATFORM_ID, Inject } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { CommonModule, isPlatformBrowser, Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../app/core/services/api.service';
 import { MaterialModule } from '../../shared/materials/materials.module';
 import { FormsModule } from '@angular/forms';
@@ -25,6 +25,16 @@ export class RoomComponent implements OnInit {
     buildingId: number | null = null;
     rooms: any[] = [];
     isLoading = false;
+    private router = inject(Router);
+    private location = inject(Location);
+
+    goBack(): void {
+        this.location.back();
+    }
+
+    isRoomOccupied(room: any): boolean {
+        return room.beds.some((b: any) => b.status === 'OCCUPIED');
+    }
 
     // Room creation
     showAddRoomModal = false;

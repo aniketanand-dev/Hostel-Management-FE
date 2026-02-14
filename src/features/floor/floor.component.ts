@@ -1,16 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../app/core/services/api.service';
 import { MaterialModule } from '../../shared/materials/materials.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-interface TableAction {
-    label: string;
-    handler: (row: any) => void;
-    show?: (row: any) => boolean;
-}
 
 @Component({
     selector: 'app-floor',
@@ -40,8 +34,13 @@ export class FloorComponent implements OnInit {
         private apiService: ApiService,
         private router: Router,
         private route: ActivatedRoute,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private location: Location
     ) { }
+
+    goBack(): void {
+        this.location.back();
+    }
 
     ngOnInit(): void {
         this.route.queryParams.subscribe((params: any) => {
@@ -67,7 +66,8 @@ export class FloorComponent implements OnInit {
                 this.floors = res.map(f => ({
                     id: f.id,
                     floorNumber: f.floorNumber,
-                    roomCount: f.rooms ? f.rooms.length : 0
+                    roomCount: f.rooms ? f.rooms.length : 0,
+                    occupiedBedsCount: f.occupiedBedsCount || 0
                 }));
             },
             error: (err: any) => {
@@ -111,6 +111,11 @@ export class FloorComponent implements OnInit {
     }
 
     deleteFloor(row: any): void {
+        if (row.occupiedBedsCount > 0) {
+            this.snackBar.open('Cannot delete floor with occupied beds', 'Close', { duration: 3000 });
+            return;
+        }
+
         if (confirm(`Are you sure you want to delete Floor ${row.floorNumber}? All rooms on this floor will be affected.`)) {
             this.apiService.deleteData(`floor/${row.id}`).subscribe({
                 next: () => {

@@ -1,4 +1,24 @@
 <div class="dashboard-container animate-fade-in">
+    <div class="page-nav-header">
+        <button class="back-btn" (click)="goBack()">
+            <mat-icon>keyboard_double_arrow_left</mat-icon> Back
+        </button>
+        <div class="breadcrumb-wrapper">
+            <div class="breadcrumb-item" routerLink="/buildings">
+                <mat-icon>apartment</mat-icon>
+                <span>Building</span>
+                <span class="separator">></span>
+            </div>
+            <div class="breadcrumb-item" routerLink="/buildings">
+                <span>Building Management</span>
+                <span class="separator">></span>
+            </div>
+            <div class="breadcrumb-item" [routerLink]="['/buildings/floors']" [queryParams]="{ buildingId: selectedBuildingId }">
+                <span>Floor List</span>
+                <span class="separator">></span>
+            </div>
+        </div>
+    </div>
     <header class="page-header">
         <div class="header-text">
             <h1>Floor Management</h1>
@@ -29,9 +49,9 @@
                             <mat-icon>edit</mat-icon>
                             <span>Rename Floor</span>
                         </button>
-                        <button mat-menu-item (click)="deleteFloor(floor)" class="delete-action">
+                        <button mat-menu-item (click)="deleteFloor(floor)" class="delete-action" [disabled]="floor.occupiedBedsCount > 0">
                             <mat-icon>delete</mat-icon>
-                            <span>Remove Floor</span>
+                            <span>{{ floor.occupiedBedsCount > 0 ? 'Cannot Delete (Occupied)' : 'Remove Floor' }}</span>
                         </button>
                     </mat-menu>
                 </div>

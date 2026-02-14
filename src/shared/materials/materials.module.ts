@@ -24,6 +24,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 
 @NgModule({
@@ -54,7 +55,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatChipsModule,
         MatDatepickerModule,
         MatNativeDateModule,
-        MatTabsModule
+        MatTabsModule,
+        MatExpansionModule
     ],
     exports: [
         CommonModule,
@@ -82,7 +84,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatChipsModule,
         MatDatepickerModule,
         MatNativeDateModule,
-        MatTabsModule
+        MatTabsModule,
+        MatExpansionModule
     ]
 })
 export class MaterialModule { }

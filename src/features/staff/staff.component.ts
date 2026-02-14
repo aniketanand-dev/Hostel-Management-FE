@@ -4,6 +4,7 @@ import { AuthService } from '../../app/core/services/auth.service';
 import { ApiService } from '../../app/core/services/api.service';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../shared/materials/materials.module';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-staff',
@@ -21,7 +22,8 @@ export class StaffComponent implements OnInit {
     constructor(
         private _staffService: StaffService,
         private auth: AuthService,
-        private api: ApiService
+        private api: ApiService,
+        private router: Router
     ) { }
 
     ngOnInit(): void {
@@ -50,7 +52,7 @@ export class StaffComponent implements OnInit {
     }
 
     editStudent(row: any) {
-        console.log('Edit', row);
+        this.router.navigate(['/students/student-form'], { queryParams: { id: row.id, type: 'staff' } });
     }
 
     viewStudent(row: any) {
@@ -68,6 +70,15 @@ export class StaffComponent implements OnInit {
     }
 
     deleteStudent(row: any) {
-        console.log('Delete', row);
+        if (confirm(`Are you sure you want to delete ${row.name}?`)) {
+            this.api.deleteData(`user/${row.id}`).subscribe({
+                next: (res) => {
+                    this.loadStaff();
+                },
+                error: (err) => {
+                    alert(err.error?.message || 'Failed to delete staff member');
+                }
+            });
+        }
     }
 }

@@ -1,60 +1,287 @@
 <div class="student-form-container">
     <mat-card>
-        <mat-card-title>{{ isEditMode ? 'Edit' : 'Add' }} {{ roleName === 'STUDENT' ? 'Student' : 'Staff' }}</mat-card-title>
+        <div class="card-header">
+            <button mat-icon-button (click)="goBack()" color="primary" matTooltip="Back to List" class="back-btn">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            <mat-card-title>{{ isEditMode ? 'Edit' : 'Add' }} {{ roleName === 'STUDENT' ? 'Student' : 'Staff' }}</mat-card-title>
+        </div>
 
         <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
             <div class="form-fields">
-                <!-- Name -->
-                <mat-form-field appearance="outline" class="form-field">
-                    <mat-label>Full Name</mat-label>
-                    <input matInput placeholder="Enter name"
-                        formControlName="name" required>
-                    <mat-error
-                        *ngIf="studentForm.get('name')?.hasError('required')">
-                        Name is required
-                    </mat-error>
-                </mat-form-field>
+                
+                <!-- Section 1: Basic Information -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <mat-icon>person</mat-icon>
+                        <h3 class="section-title">Basic Information</h3>
+                    </div>
+                    
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Full Name</mat-label>
+                            <input matInput placeholder="Enter name" formControlName="name" required>
+                            <mat-icon matSuffix>account_circle</mat-icon>
+                        </mat-form-field>
 
-                <!-- Email -->
-                <mat-form-field appearance="outline" class="form-field">
-                    <mat-label>Email</mat-label>
-                    <input matInput placeholder="Enter email"
-                        formControlName="email" required>
-                    <mat-error
-                        *ngIf="studentForm.get('email')?.hasError('email')">
-                        Please enter a valid email
-                    </mat-error>
-                    <mat-error
-                        *ngIf="studentForm.get('email')?.hasError('required')">
-                        Email is required
-                    </mat-error>
-                </mat-form-field>
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Email Address</mat-label>
+                            <input matInput placeholder="Enter email" formControlName="email" required>
+                            <mat-icon matSuffix>email</mat-icon>
+                        </mat-form-field>
+                    </div>
 
-                <!-- Gender -->
-                <mat-form-field appearance="outline" class="form-field">
-                    <mat-label>Gender</mat-label>
-                    <mat-select formControlName="gender">
-                        <mat-option value="MALE">Male</mat-option>
-                        <mat-option value="FEMALE">Female</mat-option>
-                        <mat-option value="OTHER">Other</mat-option>
-                    </mat-select>
-                </mat-form-field>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Gender</mat-label>
+                            <mat-select formControlName="gender">
+                                <mat-option value="MALE">Male</mat-option>
+                                <mat-option value="FEMALE">Female</mat-option>
+                                <mat-option value="OTHER">Other</mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
-                <!-- Active Status -->
-                <mat-slide-toggle formControlName="isActive">
-                    Active Student
-                </mat-slide-toggle>
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Phone Number</mat-label>
+                            <input matInput placeholder="User phone number" formControlName="phoneNumber">
+                            <mat-icon matSuffix>phone</mat-icon>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <!-- Section 1.5: Room Allocation (Students Only) -->
+                <div class="form-section" *ngIf="roleName === 'STUDENT'">
+                    <div class="section-header">
+                        <mat-icon>meeting_room</mat-icon>
+                        <h3 class="section-title">Room Allocation</h3>
+                    </div>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Select Building</mat-label>
+                            <mat-select (selectionChange)="onBuildingChange($event.value)" [(ngModel)]="currentBuildingId" [ngModelOptions]="{standalone: true}">
+                                <mat-option *ngFor="let b of buildings" [value]="b.id">
+                                    {{b.buildingName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Select Floor</mat-label>
+                            <mat-select (selectionChange)="onFloorChange($event.value)" [disabled]="!floors.length" [(ngModel)]="currentFloorId" [ngModelOptions]="{standalone: true}">
+                                <mat-option *ngFor="let floor of floors" [value]="floor.id">
+                                    Floor {{floor.floorNumber}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Select Room</mat-label>
+                            <mat-select (selectionChange)="onRoomChange($event.value)" [disabled]="!rooms.length" [(ngModel)]="currentRoomId" [ngModelOptions]="{standalone: true}">
+                                <mat-option *ngFor="let room of rooms" [value]="room.id">
+                                    Room {{room.roomNumber}} ({{room.type}})
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Select Bed</mat-label>
+                            <mat-select formControlName="bedId" [disabled]="!beds.length">
+                                <mat-option *ngFor="let bed of beds" [value]="bed.id">
+                                    Bed {{bed.bedNumber}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-hint *ngIf="!beds.length && rooms.length">No available beds in this room</mat-hint>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <!-- Section 2: Aadhaar Verification -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <mat-icon>verified_user</mat-icon>
+                        <h3 class="section-title">Identity Verification</h3>
+                    </div>
+
+                    <div class="verification-header">
+                        <span class="mode-label">Select Verification Method:</span>
+                        <div class="mode-toggle">
+                            <button mat-button [class.active-mode]="verificationMode === 'OFFLINE'" (click)="verificationMode = 'OFFLINE'" type="button">Offline e-KYC</button>
+                            <button mat-button [class.active-mode]="verificationMode === 'ONLINE'" (click)="verificationMode = 'ONLINE'" type="button">Online OTP</button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Aadhaar Number</mat-label>
+                            <input matInput placeholder="12 digit Aadhaar" formControlName="aadhaarNumber" maxlength="12">
+                            <button mat-icon-button matSuffix (click)="verifyAadhaar()" type="button" matTooltip="Verify Aadhaar" *ngIf="verificationMode === 'ONLINE'">
+                                <mat-icon [class.verified-green]="studentForm.get('isAadhaarVerified')?.value">verified</mat-icon>
+                            </button>
+                            <mat-icon matSuffix *ngIf="verificationMode === 'OFFLINE' && studentForm.get('isAadhaarVerified')?.value" class="verified-green">verified</mat-icon>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="form-field" *ngIf="roleName === 'STUDENT'">
+                            <mat-label>Passport Details (Optional)</mat-label>
+                            <input matInput placeholder="Enter passport number" formControlName="passportNumber">
+                        </mat-form-field>
+                    </div>
+
+                    <div *ngIf="verificationMode === 'ONLINE'">
+                        <div class="otp-container" *ngIf="otpSent">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Enter 6-Digit OTP</mat-label>
+                                <input matInput placeholder="123456" [(ngModel)]="otpValue" [ngModelOptions]="{standalone: true}" maxlength="6">
+                                <mat-hint>OTP sent to registered mobile</mat-hint>
+                            </mat-form-field>
+                            <button mat-raised-button color="accent" (click)="submitOtp()" type="button">Verify OTP</button>
+                        </div>
+                    </div>
+
+                    <div *ngIf="verificationMode === 'OFFLINE'" class="offline-kyc-container">
+                        <p class="kyc-hint">Download your XML ZIP from <a href="https://myaadhaar.uidai.gov.in/offline-ekyc" target="_blank">UIDAI Portal</a></p>
+                        <div class="kyc-row">
+                            <div class="kyc-upload">
+                                <label>Upload KYC ZIP</label>
+                                <input type="file" (change)="onKycFileSelected($event)" accept=".zip">
+                            </div>
+                            <mat-form-field appearance="outline" style="width: 140px;">
+                                <mat-label>Share Code</mat-label>
+                                <input matInput placeholder="4 digits" [(ngModel)]="shareCode" [ngModelOptions]="{standalone: true}" maxlength="4">
+                            </mat-form-field>
+                        </div>
+                        <button mat-raised-button color="primary" class="kyc-btn" (click)="onOfflineKycVerify()" type="button" [disabled]="!selectedKycFile || !shareCode">
+                            Extract Data from ZIP
+                        </button>
+                    </div>
+
+                    <!-- Premium Identity Card -->
+                    <div class="verified-identity-card" *ngIf="verifiedIdentity">
+                        <div class="identity-header">
+                            <mat-icon>verified</mat-icon>
+                            <span>Digital Identity Verified</span>
+                        </div>
+                        <div class="identity-content">
+                            <div class="identity-photo" *ngIf="verifiedPhoto">
+                                <img [src]="'data:image/jpeg;base64,' + verifiedPhoto" alt="Aadhaar Photo">
+                            </div>
+                            <div class="identity-grid">
+                                <div class="item"><label>Aadhaar No</label> <span>{{studentForm.get('aadhaarNumber')?.value}}</span></div>
+                                <div class="item"><label>Full Name</label> <span>{{verifiedIdentity.name}}</span></div>
+                                <div class="item"><label>Guardian/Father</label> <span>{{verifiedIdentity.fatherName}}</span></div>
+                                <div class="item"><label>Date of Birth</label> <span>{{verifiedIdentity.dob}}</span></div>
+                                <div class="item full-width"><label>Official Address</label> <span>{{verifiedIdentity.address}}</span></div>
+                            </div>
+                        </div>
+                        <div class="identity-footer" *ngIf="verifiedIdentity.name.toLowerCase() !== studentForm.get('name')?.value.toLowerCase()">
+                            <mat-icon>warning</mat-icon>
+                            <span>Name Mismatch: Aadhaar Name ({{verifiedIdentity.name}}) vs Form Name</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Family & Emergency -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <mat-icon>family_restroom</mat-icon>
+                        <h3 class="section-title">Family & Emergency</h3>
+                    </div>
+                    
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Father's Name</mat-label>
+                            <input matInput placeholder="Name" formControlName="fatherName">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Father's Phone</mat-label>
+                            <input matInput placeholder="Mobile No" formControlName="fatherPhoneNumber">
+                            <mat-icon matSuffix>phone</mat-icon>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Mother's Name</mat-label>
+                            <input matInput placeholder="Name" formControlName="motherName">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Mother's Phone</mat-label>
+                            <input matInput placeholder="Mobile No" formControlName="motherPhoneNumber">
+                            <mat-icon matSuffix>phone</mat-icon>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Emergency Contact No</mat-label>
+                            <input matInput placeholder="Urgent Mobile" formControlName="emergencyContactNumber">
+                            <mat-icon matSuffix>emergency</mat-icon>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Parents Aadhaar No</mat-label>
+                            <input matInput placeholder="12 digit No" formControlName="parentAadhaarNumber">
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <!-- Section 4: Address Details -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <mat-icon>home</mat-icon>
+                        <h3 class="section-title">Address Information</h3>
+                    </div>
+
+                    <mat-form-field appearance="outline" class="form-field">
+                        <mat-label>Permanent Address</mat-label>
+                        <textarea matInput placeholder="Home town address" formControlName="permanentAddress" rows="2"></textarea>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="form-field">
+                        <mat-label>Working Address</mat-label>
+                        <textarea matInput placeholder="Office or workplace address" formControlName="workingAddress" rows="2"></textarea>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="form-field">
+                        <mat-label>Temporary / Current Address</mat-label>
+                        <textarea matInput placeholder="Current residence address" formControlName="temporaryAddress" rows="2"></textarea>
+                    </mat-form-field>
+                </div>
+
+                <!-- Section 5: Photos -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <mat-icon>add_a_photo</mat-icon>
+                        <h3 class="section-title">Media Uploads</h3>
+                    </div>
+
+                    <div class="photo-uploads">
+                        <div class="upload-item">
+                            <label>Profile Photo</label>
+                            <div class="photo-preview profile-photo" *ngIf="profilePreview || existingProfilePhoto">
+                                <img [src]="profilePreview || (baseUrl + existingProfilePhoto)" alt="Profile">
+                            </div>
+                            <input type="file" (change)="onFileSelected($event, 'profilePhoto')" accept="image/*">
+                        </div>
+                        <div class="upload-item">
+                            <label>Aadhaar Scan</label>
+                            <div class="photo-preview" *ngIf="aadhaarPreview || existingAadhaarPhoto">
+                                <img [src]="aadhaarPreview || (baseUrl + existingAadhaarPhoto)" alt="Aadhaar">
+                            </div>
+                            <input type="file" (change)="onFileSelected($event, 'aadhaarPhoto')" accept="image/*">
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
             <div class="form-actions">
-                <button mat-raised-button matRipple color="primary" type="submit"
-                    [disabled]="studentForm.invalid">
-                    Save
-                </button>
-                <button mat-stroked-button color="warn" type="reset">
-                    Reset
+                <button mat-raised-button color="primary" type="submit" [disabled]="studentForm.invalid">
+                    {{ isEditMode ? 'Update Profile' : 'Complete Registration' }}
                 </button>
             </div>
         </form>
     </mat-card>
 </div>
+
