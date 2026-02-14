@@ -1,1 +1,5 @@
-<p>loader works!</p>
+@if (loadingService.isLoading()) {
+  <div class="loader-overlay">
+    <div class="spinner"></div>
+  </div>
+}

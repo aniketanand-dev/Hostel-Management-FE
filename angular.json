@@ -38,12 +38,7 @@
             ],
             "scripts": [
                 "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
-                ],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+                ]
           },
           "configurations": {
             "production": {
@@ -110,6 +105,6 @@
     }
   },
   "cli": {
-    "analytics": "af734995-cec5-4f48-8ef4-c353b43065eb"
+    "analytics": false
   }
 }
